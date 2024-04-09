@@ -2,13 +2,8 @@
 
 // Constructor
 FourMomentum::FourMomentum(double energy, double px, double py, double pz)
-    : energy(energy), px(px), py(py), pz(pz)
-{
-  if (energy <= 0)
-  {
-    throw std::invalid_argument("FourMomentum energy must be greater than 0.");
-  }
-}
+    : energy(energy), px(px), py(py), pz(pz) {}
+
 
 // Copy constructor
 FourMomentum::FourMomentum(const FourMomentum &other)
@@ -51,12 +46,7 @@ FourMomentum::~FourMomentum() {}
 // Setters
 void FourMomentum::set_energy(double energy)
 {
-  if (energy > 0)
-    this->energy = energy;
-  else
-  {
-    throw std::invalid_argument("FourMomentum energy must be greater than 0.");
-  }
+  this->energy = energy;
 }
 
 void FourMomentum::set_momentum(double px, double py, double pz)
