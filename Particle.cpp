@@ -1,6 +1,6 @@
 // Lepton.cpp
 #include "Particle.h"
-#include "FourMomentum.h" 
+#include "FourMomentum.h"
 #include <iostream>  // For std::cout
 #include <stdexcept> // For std::invalid_argument
 
@@ -8,44 +8,35 @@
 Particle::Particle() : charge(0), four_momentum(nullptr) {}
 
 // Protected constructor without label with validity check
-Particle::Particle(std::string type, int charge, double spin, std::unique_ptr<FourMomentum> fourMomentum)
-    : type(type), charge(charge), spin(spin), four_momentum(std::move(fourMomentum))
+Particle::Particle(std::string type, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum)
+    : type(type), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum(std::move(fourMomentum))
 {
-  if(this->four_momentum->get_energy() <= 0)
+  if (this->four_momentum->get_energy() <= 0)
   {
     throw std::invalid_argument("FourMomentum energy must be greater than 0.");
   }
+  check_mass_validity();
 }
 
 // Protected constructor with label with validity check
-Particle::Particle(std::string type, const std::string &label, int charge, double spin, std::unique_ptr<FourMomentum> fourMomentum)
-    : type(type), label(label), spin(spin), charge(charge), four_momentum(std::move(fourMomentum))
+Particle::Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum)
+    : type(type), label(label), spin(spin), charge(charge), rest_mass(rest_mass), four_momentum(std::move(fourMomentum))
 {
-  if(this->four_momentum->get_energy() <= 0)
+  if (this->four_momentum->get_energy() <= 0)
   {
     throw std::invalid_argument("FourMomentum energy must be greater than 0.");
   }
+  check_mass_validity();
 }
 
 // Constructor without label with validity check
-Particle::Particle(std::string type, int charge, double spin)
-    : type(type), charge(charge), spin(spin), four_momentum(std::make_unique<FourMomentum>())
-{
-  if(this->four_momentum->get_energy() <= 0)
-  {
-    throw std::invalid_argument("FourMomentum energy must be greater than 0.");
-  }
-}
+Particle::Particle(std::string type, int charge, double spin, double rest_mass)
+    : type(type), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum(std::make_unique<FourMomentum>()) {}
+
 
 // Constructor with label with validity check
-Particle::Particle(std::string type, const std::string &label, int charge, double spin)
-    : type(type), label(label), charge(charge), spin(spin), four_momentum(std::make_unique<FourMomentum>())
-{
-  if(this->four_momentum->get_energy() <= 0)
-  {
-    throw std::invalid_argument("FourMomentum energy must be greater than 0.");
-  }
-}
+Particle::Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass)
+    : type(type), label(label), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum(std::make_unique<FourMomentum>()) {}
 
 // Copy constructor
 Particle::Particle(const Particle &other)
@@ -62,7 +53,7 @@ Particle::~Particle() {}
 // Copy assignment operator
 Particle &Particle::operator=(const Particle &other)
 {
-  if(this != &other)
+  if (this != &other)
   {
     label = other.label;
     charge = other.charge;
@@ -77,7 +68,7 @@ Particle &Particle::operator=(const Particle &other)
 // Move assignment operator
 Particle &Particle::operator=(Particle &&other) noexcept
 {
-  if(this != &other)
+  if (this != &other)
   {
     label = std::move(other.label);
     charge = other.charge;
@@ -98,6 +89,7 @@ void Particle::set_label(const std::string &label)
 void Particle::set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum)
 {
   this->four_momentum = std::move(fourMomentum);
+  check_mass_validity();
 }
 
 // Getters
@@ -118,7 +110,7 @@ std::string Particle::get_type() const
 
 const FourMomentum &Particle::get_four_momentum() const
 {
-  if(!four_momentum)
+  if (!four_momentum)
   {
     throw std::runtime_error("FourMomentum is not initialized.");
   }
@@ -149,4 +141,17 @@ double dot_product_four_momentum(const Particle &a, const Particle &b)
 void Particle::print() const
 {
   std::cout << "\033[1mType:\033[0m " << type << ", \033[1mLabel:\033[0m " << label << ", \033[1mCharge (e):\033[0m " << charge << ", \033[1mSpin (ℏ):\033[0m " << spin << ", \033[1mFour Momentum (MeV): \033[0m[" << *four_momentum << "]" << std::endl;
+}
+
+// Implement the validity check method
+void Particle::check_mass_validity() const
+{
+  if (four_momentum)
+  {
+    double invMass = four_momentum->invariant_mass();
+    if (std::abs(invMass - rest_mass) > 1e-5)
+    { // 1e-5 tolerance for floating-point comparison
+      throw std::invalid_argument("Rest mass does not match the invariant mass of the provided FourMomentum.");
+    }
+  }
 }

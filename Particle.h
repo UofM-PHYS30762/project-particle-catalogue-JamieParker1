@@ -12,17 +12,19 @@ class Particle
 private:
   std::string type;           // Type of particle e.g 'electron', 'muon' ...
   std::string label = "None"; // Optional label of particle
-  int charge = 0;                 // Charge of the particle
-  double spin = 0.0;                // Spin of particle
-  double rest_mass = 0.0;           // Rest mass of particle
+  int charge = 0;             // Charge of the particle
+  double spin = 0.0;          // Spin of particle
+  double rest_mass = 0.0;     // Rest mass of particle
+
+  void check_mass_validity() const;
 
 protected:
   // Protected attribute so that derived classes can access four momentum object
   std::unique_ptr<FourMomentum> four_momentum;
   // Constructor without label
-  Particle(std::string type, int charge, double spin, std::unique_ptr<FourMomentum> fourMomentum);
+  Particle(std::string type, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum);
   // Constructor with label
-  Particle(std::string type, const std::string &label, int charge, double spin, std::unique_ptr<FourMomentum> fourMomentum);
+  Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum);
 
 public:
   // Default constructor
@@ -30,9 +32,9 @@ public:
 
   // Parameterized constructors
   // Constructor without label
-  Particle(std::string type, int charge, double spin);
+  Particle(std::string type, int charge, double spin, double rest_mass);
   // Constructor with label
-  Particle(std::string type, const std::string &label, int charge, double spin);
+  Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass);
 
   // Copy constructor
   Particle(const Particle &other);
