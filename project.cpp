@@ -2,6 +2,7 @@
 #include "Particle.h"
 #include "Lepton.h"
 #include "Electron.h"
+#include "Muon.h"
 
 int main()
 {
@@ -16,6 +17,10 @@ int main()
                                std::vector<double>{0.1, 0.1, 0.2, 0.111});
   std::cout << electron.get_four_momentum() << std::endl;
 
+  Muon muon = Muon("Muon 1",
+                   std::make_unique<FourMomentum>(105.7,0,0,0),
+                   true);
+  std::cout << muon.get_four_momentum() << std::endl;
 
   FourMomentum f = FourMomentum(1,0,0,0);
   FourMomentum t = FourMomentum(2,0,0,0);
