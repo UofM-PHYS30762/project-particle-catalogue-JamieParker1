@@ -110,9 +110,9 @@ std::string Particle::get_type() const
 
 const FourMomentum &Particle::get_four_momentum() const
 {
-  if (!four_momentum)
+  if ((four_momentum->get_energy() && four_momentum->get_Px() && four_momentum->get_Py() && four_momentum->get_Pz()) == 0)
   {
-    throw std::runtime_error("FourMomentum is not initialized.");
+    throw std::runtime_error("FourMomentum has not been intitialised.");
   }
   return *four_momentum;
 }
@@ -130,7 +130,7 @@ FourMomentum sum_four_momentum(const Particle &a, const Particle &b)
 
 double dot_product_four_momentum(const Particle &a, const Particle &b)
 {
-  // Directly utilize FourMomentum's members via Lepton's unique_ptr
+  // Directly utilize FourMomentum's members via Particles's unique_ptr
   return a.four_momentum->get_energy() * b.four_momentum->get_energy() -
          (a.four_momentum->get_Px() * b.four_momentum->get_Px() +
           a.four_momentum->get_Py() * b.four_momentum->get_Py() +

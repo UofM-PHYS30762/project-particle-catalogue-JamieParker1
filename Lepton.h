@@ -45,6 +45,8 @@ public:
 
   // Virtual print function
   virtual void print() const override;
+
+  // Lepton number getter
 };
 
 #endif // LEPTON_H
