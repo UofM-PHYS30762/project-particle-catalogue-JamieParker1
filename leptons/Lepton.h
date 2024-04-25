@@ -5,7 +5,7 @@
 #include <vector> // For std::vector
 #include <string> // For std::string
 
-#include "Particle.h"
+#include "../Particle.h"
 
 class Lepton : public Particle
 {
@@ -14,9 +14,9 @@ private:
   
 protected:
   // Constructor without label
-  Lepton(std::string type, int charge, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, int lepton_number);
+  Lepton(std::string type, int charge, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, int lepton_number, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
-  Lepton(std::string type, const std::string &label, int charge, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, int lepton_number);
+  Lepton(std::string type, const std::string &label, int charge, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, int lepton_number, std::vector<DecayType> possible_decay_types = {DecayType::None});
 
 public:
   // Default constructor
@@ -24,9 +24,9 @@ public:
 
   // Parameterized constructors
   // Constructor without label
-  Lepton(std::string type, int charge, double rest_mass, int lepton_number);
+  Lepton(std::string type, int charge, double rest_mass, int lepton_number, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
-  Lepton(std::string type, const std::string &label, int charge, double rest_mass, int lepton_number);
+  Lepton(std::string type, const std::string &label, int charge, double rest_mass, int lepton_number, std::vector<DecayType> possible_decay_types = {DecayType::None});
 
   // Copy constructor
   Lepton(const Lepton &other);
@@ -43,10 +43,11 @@ public:
   // Move assignment operator
   Lepton &operator=(Lepton &&other) noexcept;
 
+  // Getters
+  int get_lepton_number() const override {return lepton_number;}
+
   // Virtual print function
   virtual void print() const override;
-
-  // Lepton number getter
 };
 
 #endif // LEPTON_H

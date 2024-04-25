@@ -1,9 +1,22 @@
 #include "FourMomentum.h"
+#include <cmath>
+#include <vector>
 
 // Constructor
-FourMomentum::FourMomentum(double energy, double px, double py, double pz)
-    : energy(energy), px(px), py(py), pz(pz) {}
-
+FourMomentum::FourMomentum(double energy_or_rest_mass, double px, double py, double pz, bool energy_is_rest_mass)
+    : px(px), py(py), pz(pz)
+{
+  if (energy_is_rest_mass)
+  {
+    double spatial_momentum_magnitude_squared = px * px + py * py + pz * pz;
+    double energy_squared = spatial_momentum_magnitude_squared + pow(energy_or_rest_mass, 2);
+    energy = std::sqrt(energy_squared);
+  }
+  else
+  {
+    energy = energy_or_rest_mass; // Treat as energy directly
+  }
+}
 
 // Copy constructor
 FourMomentum::FourMomentum(const FourMomentum &other)
@@ -61,27 +74,89 @@ double FourMomentum::get_energy() const
 {
   return energy;
 }
-
 double FourMomentum::get_Px() const
 {
   return px;
 }
-
 double FourMomentum::get_Py() const
 {
   return py;
 }
-
 double FourMomentum::get_Pz() const
 {
   return pz;
 }
 
+// Calculates velocity from four momentum in units of c
+double FourMomentum::get_velocity_magnitude() const
+{
+  double spatial_momentum_magnitude = std::sqrt(std::pow(px, 2) + std::pow(py, 2) + std::pow(pz, 2));
+  double velocity = spatial_momentum_magnitude / energy;
+  return velocity;
+}
+double FourMomentum::get_velocity_x() const
+{
+  return px/energy;
+}
+double FourMomentum::get_velocity_y() const
+{
+  return py/energy;
+}
+double FourMomentum::get_velocity_z() const
+{
+  return pz/energy;
+}
+std::vector<double> FourMomentum::get_velocity_vector() const
+{
+  return std::vector<double>{this->get_velocity_x(), this->get_velocity_y(), this->get_velocity_z()};
+}
+
 // Function to calculate the invariant mass
 double FourMomentum::invariant_mass() const
 {
+  // std::amax to prevent sqrt of a negative
   return sqrt(std::max(0.0, energy * energy - (px * px + py * py + pz * pz)));
 }
+
+// Function to perform a lorentz boost to four momentum
+void FourMomentum::lorentz_boost(double v_x, double v_y, double v_z)
+{// Velocity in units of c
+  double v_magnitude_2 = std::pow(v_x, 2) + std::pow(v_y, 2) +std::pow(v_z, 2);
+  if (std::sqrt(v_magnitude_2) >= 1)
+  {
+    std::cerr << "Error: Velocity exceeds speed of light. Four momentum not boosted.\n";
+    return;
+  }
+  else if (std::sqrt(v_magnitude_2) == 0)
+  {
+    return;
+  }
+  double gamma = 1 / std::sqrt(1-v_magnitude_2);
+  double beta_dot_momentum = v_x*px + v_y*py + v_z*pz; //beta is just velocity in units of c in natural units
+
+  // Calculate new energy component
+  double new_energy = gamma * (energy - beta_dot_momentum);
+  // Calculate new momentum components
+  double factor = (gamma - 1) * beta_dot_momentum / v_magnitude_2;
+  double new_px = px + factor * v_x - gamma * energy * v_x;
+  double new_py = py + factor * v_y - gamma * energy * v_y;
+  double new_pz = pz + factor * v_z - gamma * energy * v_z;
+
+  energy = new_energy;
+  px = new_px;
+  py = new_py;
+  pz = new_pz;
+}
+void FourMomentum::lorentz_boost(std::vector<double> v_xyz)
+{// Velocity in units of c
+  if (v_xyz.size() != 3)
+  {
+    std::cerr << "Velocity vector incorrect length. Four momentum not boosted.\n";
+    return;
+  }
+  lorentz_boost(v_xyz[0], v_xyz[1], v_xyz[2]);
+}
+
 
 // Overloaded operator+ for addition
 FourMomentum FourMomentum::operator+(const FourMomentum &rhs) const

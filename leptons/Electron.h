@@ -2,11 +2,11 @@
 #define ELECTRON_H
 
 #include "Lepton.h"
-#include "FourMomentum.h"
+#include "../FourMomentum.h"
 #include <vector>
 #include <string>
  
-// Electron class
+// Electron class 
 class Electron : public Lepton
 {
 private:
@@ -17,6 +17,8 @@ public:
   // Constructors
   Electron(std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number = 1);
   Electron(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number = 1);
+  // Default constructor
+  Electron();
 
   // Special member functions
   Electron(const Electron &other);                // Copy constructor
