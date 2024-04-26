@@ -33,6 +33,7 @@ public:
 
   // Virtual function overrides
   virtual void print() const override;
+  virtual void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum) override;
 };
 
 #endif // ELECTRON_H

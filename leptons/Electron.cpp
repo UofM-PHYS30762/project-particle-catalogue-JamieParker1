@@ -73,6 +73,24 @@ const std::vector<double> &Electron::get_energy_deposited_in_layers() const
   return energy_deposited_in_layers;
 }
 
+void Electron::set_four_momentum(std::unique_ptr<FourMomentum> four_momentum)
+{
+  if (four_momentum->get_energy() <= 0)
+  {
+    throw std::invalid_argument("FourMomentum energy must be greater than 0.");
+  }
+  else if (Particle::is_invariant_mass_valid(four_momentum->invariant_mass()))
+  {
+    this->four_momentum = std::move(four_momentum);
+    double equal_energy_split = this->four_momentum->get_energy() / 4;
+    set_energy_deposited_in_layers(std::vector<double>{equal_energy_split, equal_energy_split, equal_energy_split, equal_energy_split});
+  }
+  else
+  {
+    throw std::invalid_argument("Rest mass does not match the invariant mass of the provided FourMomentum.");
+  }
+}
+
 // Override the print function
 void Electron::print() const
 {

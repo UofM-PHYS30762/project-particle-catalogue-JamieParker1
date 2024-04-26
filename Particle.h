@@ -40,8 +40,6 @@ private:
   std::vector<std::unique_ptr<Particle>> decay_products; 
   bool validate_decay_products(const std::vector<std::unique_ptr<Particle>>& decay_products, DecayType decay_type) const;
 
-  bool is_invariant_mass_valid(double invariant_mass) const;
-
 protected:
   // Protected attribute so that derived classes can access four momentum object
   std::unique_ptr<FourMomentum> four_momentum;
@@ -49,7 +47,8 @@ protected:
   Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
   Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
-
+  // Function to check if invariant mass of four momentum matches rest mass
+  bool is_invariant_mass_valid(double invariant_mass) const;
 public:
   // Default constructor
   Particle();
@@ -77,9 +76,12 @@ public:
 
   // Setters
   void set_label(const std::string &label);
-  void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum);
   void set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
   void auto_set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
+
+  // void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum);
+  virtual void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum);
+
 
   // Getters
   std::string get_label() const;
