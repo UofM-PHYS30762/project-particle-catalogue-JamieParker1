@@ -26,73 +26,88 @@ public:
     particles.clear();
   }
 
-  void addParticle(T *particle)
+  void add_particle(T *particle)
   {
     particles.push_back(particle);
   }
 
-  void printAll() const
+  void print_all() const
   {
     for (const auto &particle : particles)
     {
+      std::cout << "-------------\n";
       particle->print();
+      std::cout << "-------------\n";
     }
   }
-  
+
   // Get the total number of particles
-  size_t getTotalNumberOfParticles() const
+  size_t get_number_of_particles() const
   {
     return particles.size();
   }
 
   // Get number of particles of each type
-  std::map<std::type_index, int> getParticleCountByType() const
+  std::map<std::string, int> get_particle_count_by_type() const
   {
-    std::map<std::type_index, int> counts;
+    std::map<std::string, int> counts;
     for (const auto &particle : particles)
     {
-      counts[typeid(*particle)]++;
+      // Get the type name as a string
+      std::string typeName = typeid(*particle).name();
+
+      // Remove the prefix if it exists
+      size_t pos = typeName.find_first_not_of("0123456789");
+      if (pos != std::string::npos)
+      {
+        typeName = typeName.substr(pos);
+      }
+
+      // Increment the count for the type
+      counts[typeName]++;
     }
     return counts;
   }
 
   // Sum the four-momentum of all particles
-  FourMomentum sumFourMomenta() const
+  FourMomentum sum_four_momenta() const
   {
     FourMomentum total;
     for (const auto &particle : particles)
     {
-      total += particle->getFourMomentum();
+      total = total + particle->get_four_momentum();
     }
     return total;
   }
 
   // Get a sub-container of pointers to particles of the same kind
   template <typename SubType>
-  std::vector<SubType *> getSubContainer() const
+  std::vector<SubType *> get_sub_container() const
   {
-    std::vector<SubType *> subContainer;
+    std::vector<SubType *> sub_container;
     for (auto &particle : particles)
     {
       SubType *casted = dynamic_cast<SubType *>(particle);
       if (casted)
       {
-        subContainer.push_back(casted);
+        sub_container.push_back(casted);
       }
     }
-    return subContainer;
+    return sub_container;
   }
 
   // Print information about one or more particles
   template <typename SubType>
-  void printInfoByType() const
+  void print_info_by_type() const
   {
     for (const auto &particle : particles)
     {
       SubType *casted = dynamic_cast<SubType *>(particle);
       if (casted)
       {
+        std::cout << "-------------\n";
         casted->print();
+        std::cout << "-------------\n";
       }
     }
   }

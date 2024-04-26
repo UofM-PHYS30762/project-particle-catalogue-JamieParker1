@@ -11,14 +11,14 @@ class Electron : public Lepton
 {
 private:
   std::vector<double> energy_deposited_in_layers; // Specific to electrons
-  bool is_valid_energy_deposit() const;
+  bool is_valid_energy_deposit(const std::vector<double>& energy_deposited_in_layers) const;
 
 public:
   // Constructors
   Electron(std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number = 1);
   Electron(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number = 1);
   // Default constructor
-  Electron();
+  Electron(int lepton_number = 1);
 
   // Special member functions
   Electron(const Electron &other);                // Copy constructor

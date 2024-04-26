@@ -1,0 +1,72 @@
+#include "W.h"
+#include "../helper_functions.h"
+#include <utility> // For std::move
+
+// Constructor without label
+W::W(int charge, std::unique_ptr<FourMomentum> four_momentum)
+    : Boson("w", validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+
+// Constructor with label
+W::W(const std::string &label, int charge, std::unique_ptr<FourMomentum> four_momentum)
+    : Boson("w", label, validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+
+// Default constructor
+W::W(int charge) : Boson("w", charge, 80400, 1, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+
+// Copy constructor
+W::W(const W &other)
+    : Boson(other) {}
+
+// Move constructor
+W::W(W &&other) noexcept
+    : Boson(std::move(other)) {}
+
+// Destructor
+W::~W() {}
+
+// Copy assignment operator
+W &W::operator=(const W &other)
+{
+  if (this != &other)
+  {
+    Boson::operator=(other);
+  }
+  return *this;
+}
+
+// Move assignment operator
+W &W::operator=(W &&other) noexcept
+{
+  if (this != &other)
+  {
+    Boson::operator=(std::move(other));
+  }
+  return *this;
+}
+
+int W::validate_charge(int charge)
+{
+  if (charge != -1 && charge != 1)
+  {
+    throw std::invalid_argument("Error: Charge must be either -1 or +1");
+  }
+  return charge;
+}
+
+// Override the print function
+void W::print() const
+{
+  Boson::print(); // Print the base class attributes
+  if (!this->get_decay_products().empty())
+  {
+    std::cout << "\033[1mDecay Products:\033[0m" << std::endl;
+    for (const auto& product : this->get_decay_products()) 
+    {
+      product->print();
+    }
+  }
+  else
+  {
+    std::cout << "\033[1mNo Decay Products\033[0m" << std::endl;
+  }
+}

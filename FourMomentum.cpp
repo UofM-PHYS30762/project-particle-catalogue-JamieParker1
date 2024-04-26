@@ -3,13 +3,27 @@
 #include <vector>
 
 // Constructor
-FourMomentum::FourMomentum(double energy_or_rest_mass, double px, double py, double pz, bool energy_is_rest_mass)
+// FourMomentum::FourMomentum(double energy_or_rest_mass, double px, double py, double pz, bool energy_is_rest_mass)
+//     : px(px), py(py), pz(pz)
+// {
+//   if (energy_is_rest_mass)
+//   {
+//     double spatial_momentum_magnitude_squared = px * px + py * py + pz * pz;
+//     double energy_squared = spatial_momentum_magnitude_squared + pow(energy_or_rest_mass, 2);
+//     energy = std::sqrt(energy_squared);
+//   }
+//   else
+//   {
+//     energy = energy_or_rest_mass; // Treat as energy directly
+//   }
+// }
+FourMomentum::FourMomentum(long double energy_or_rest_mass, long double px, long double py, long double pz, bool energy_is_rest_mass)
     : px(px), py(py), pz(pz)
 {
   if (energy_is_rest_mass)
   {
-    double spatial_momentum_magnitude_squared = px * px + py * py + pz * pz;
-    double energy_squared = spatial_momentum_magnitude_squared + pow(energy_or_rest_mass, 2);
+    long double spatial_momentum_magnitude_squared = px * px + py * py + pz * pz;
+    long double energy_squared = spatial_momentum_magnitude_squared + pow(energy_or_rest_mass, 2);
     energy = std::sqrt(energy_squared);
   }
   else
@@ -115,32 +129,62 @@ std::vector<double> FourMomentum::get_velocity_vector() const
 double FourMomentum::invariant_mass() const
 {
   // std::amax to prevent sqrt of a negative
-  return sqrt(std::max(0.0, energy * energy - (px * px + py * py + pz * pz)));
+  long double zero = 0;
+  return sqrt(std::max(zero, energy * energy - (px * px + py * py + pz * pz)));
 }
 
 // Function to perform a lorentz boost to four momentum
-void FourMomentum::lorentz_boost(double v_x, double v_y, double v_z)
+// void FourMomentum::lorentz_boost(double v_x, double v_y, double v_z)
+// {// Velocity in units of c
+//   double v_magnitude_2 = std::pow(v_x, 2) + std::pow(v_y, 2) +std::pow(v_z, 2);
+//   if (std::sqrt(v_magnitude_2) >= 1)
+//   {
+//     std::cerr << "Error: Velocity exceeds speed of light. Four momentum not boosted.\n";
+//     return;
+//   }
+//   else if (std::sqrt(v_magnitude_2) == 0)
+//   {
+//     return;
+//   }
+//   double gamma = 1 / std::sqrt(1-v_magnitude_2);
+//   double beta_dot_momentum = v_x*px + v_y*py + v_z*pz; //beta is just velocity in units of c in natural units
+
+//   // Calculate new energy component
+//   double new_energy = gamma * (energy - beta_dot_momentum);
+//   // Calculate new momentum components
+//   double factor = (gamma - 1) * beta_dot_momentum / v_magnitude_2;
+//   double new_px = px + factor * v_x + gamma * energy * v_x;
+//   double new_py = py + factor * v_y + gamma * energy * v_y;
+//   double new_pz = pz + factor * v_z + gamma * energy * v_z;
+
+//   energy = new_energy;
+//   px = new_px;
+//   py = new_py;
+//   pz = new_pz;
+// }
+void FourMomentum::lorentz_boost(long double v_x, long double v_y, long double v_z)
 {// Velocity in units of c
-  double v_magnitude_2 = std::pow(v_x, 2) + std::pow(v_y, 2) +std::pow(v_z, 2);
-  if (std::sqrt(v_magnitude_2) >= 1)
+  // long double v_magnitude_2 = std::pow(v_x, 2) + std::pow(v_y, 2) +std::pow(v_z, 2);
+  long double v_magnitude_2 = v_x*v_x + v_y*v_y + v_z*v_z;
+  if (v_magnitude_2 >= 1)
   {
     std::cerr << "Error: Velocity exceeds speed of light. Four momentum not boosted.\n";
     return;
   }
-  else if (std::sqrt(v_magnitude_2) == 0)
+  else if (v_magnitude_2 == 0)
   {
-    return;
+    return; //No boost needed
   }
-  double gamma = 1 / std::sqrt(1-v_magnitude_2);
-  double beta_dot_momentum = v_x*px + v_y*py + v_z*pz; //beta is just velocity in units of c in natural units
+  long double gamma = 1 / std::sqrt(1-v_magnitude_2);
+  long double beta_dot_momentum = v_x*px + v_y*py + v_z*pz; //beta is just velocity in units of c in natural units
 
   // Calculate new energy component
-  double new_energy = gamma * (energy - beta_dot_momentum);
+  long double new_energy = gamma * (energy - beta_dot_momentum);
   // Calculate new momentum components
-  double factor = (gamma - 1) * beta_dot_momentum / v_magnitude_2;
-  double new_px = px + factor * v_x - gamma * energy * v_x;
-  double new_py = py + factor * v_y - gamma * energy * v_y;
-  double new_pz = pz + factor * v_z - gamma * energy * v_z;
+  long double factor = (gamma - 1) * beta_dot_momentum / v_magnitude_2;
+  long double new_px = px + factor * v_x + gamma * energy * v_x;
+  long double new_py = py + factor * v_y + gamma * energy * v_y;
+  long double new_pz = pz + factor * v_z + gamma * energy * v_z;
 
   energy = new_energy;
   px = new_px;

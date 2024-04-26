@@ -7,26 +7,20 @@
  
 // Constructor without label with validity check
 Electron::Electron(std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number)
-    : Lepton("electron", (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number), energy_deposited_in_layers(energy_deposited_in_layers)
+    : Lepton("electron", (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number)
 {
-  if(!is_valid_energy_deposit())
-  {
-    throw std::invalid_argument("Sum of energy deposited in layers does not match the four-momentum energy");
-  }
+  set_energy_deposited_in_layers(energy_deposited_in_layers);
 }
 
 // Constructor with label with validity check
 Electron::Electron(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number)
-    : Lepton("electron", label, (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number), energy_deposited_in_layers(energy_deposited_in_layers)
+    : Lepton("electron", label, (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number)
 {
-  if(!is_valid_energy_deposit())
-  {
-    throw std::invalid_argument("Sum of energy deposited in layers does not match the four-momentum energy");
-  }
+  set_energy_deposited_in_layers(energy_deposited_in_layers);
 }
 
 //Default constructor
-Electron::Electron() : Lepton("electron", -1, 0.511, 1), energy_deposited_in_layers(std::vector<double>{0,0,0,0}) {}
+Electron::Electron(int lepton_number) : Lepton("electron", (lepton_number == 1) ? -1 : 1, 0.511, lepton_number), energy_deposited_in_layers(std::vector<double>{0.12775, 0.12775, 0.12775, 0.12775}) {}
 
 // Copy constructor
 Electron::Electron(const Electron &other)
@@ -64,10 +58,13 @@ Electron &Electron::operator=(Electron &&other) noexcept
 // Getter and Setter implementations
 void Electron::set_energy_deposited_in_layers(const std::vector<double> &energies)
 {
-  energy_deposited_in_layers = energies;
-  if(!is_valid_energy_deposit())
+  if(is_valid_energy_deposit(energies))
   {
-    throw std::invalid_argument("Sum of energy deposited in layers does not match the four-momentum energy");
+    this->energy_deposited_in_layers = energies;
+  }
+  else
+  {
+    throw std::invalid_argument("Error:Sum of energy deposited in layers does not match the four-momentum energy");
   }
 }
 
@@ -89,10 +86,10 @@ void Electron::print() const
 }
 
 // Utility function to check energy validity
-bool Electron::is_valid_energy_deposit() const
+bool Electron::is_valid_energy_deposit(const std::vector<double>& energy_deposited_in_layers) const
 {
   double sum_of_energy = std::accumulate(energy_deposited_in_layers.begin(), energy_deposited_in_layers.end(), 0.0);
-  double four_momentum_energy = four_momentum->get_energy(); // Assume FourMomentum has a getEnergy() method
+  double four_momentum_energy = four_momentum->get_energy(); 
   return sum_of_energy == four_momentum_energy;
 }
 

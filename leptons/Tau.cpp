@@ -65,5 +65,9 @@ void Tau::print() const
       product->print();
     }
   }
+  else
+  {
+    std::cout << "\033[1mNo Decay Products\033[0m" << std::endl;
+  }
 }
 

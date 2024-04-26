@@ -20,7 +20,10 @@ enum class Colour
   Red,
   Green,
   Blue,
-  None,
+  AntiRed,
+  AntiGreen,
+  AntiBlue,
+  None
 };
 
 
@@ -37,7 +40,7 @@ private:
   std::vector<std::unique_ptr<Particle>> decay_products; 
   bool validate_decay_products(const std::vector<std::unique_ptr<Particle>>& decay_products, DecayType decay_type) const;
 
-  void check_mass_validity() const;
+  bool is_invariant_mass_valid(double invariant_mass) const;
 
 protected:
   // Protected attribute so that derived classes can access four momentum object
