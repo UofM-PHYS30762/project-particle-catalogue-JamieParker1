@@ -7,12 +7,14 @@
 #include <map>
 #include <typeinfo>
 #include <typeindex>
+#include <set>
 
 template <typename T>
 class ParticleCatalogue
 {
 private:
   std::vector<T *> particles;
+  std::set<T *> unique_particles;
 
 public:
   ParticleCatalogue() = default;
@@ -24,11 +26,21 @@ public:
       delete particle;
     }
     particles.clear();
+    unique_particles.clear();
   }
 
   void add_particle(T *particle)
   {
-    particles.push_back(particle);
+    // Check if the particle pointer is already added
+    if (unique_particles.find(particle) == unique_particles.end())
+    {
+      particles.push_back(particle);
+      unique_particles.insert(particle); // Add to the set of unique pointers
+    }
+    else
+    {
+      std::cout << "Warning: Attempt to add a duplicate particle pointer.\n";
+    }
   }
 
   void print_all() const

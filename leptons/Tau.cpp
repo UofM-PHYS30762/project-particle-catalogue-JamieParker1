@@ -17,7 +17,7 @@ Tau::Tau(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, 
     : Lepton("tau", label, (lepton_number == 1) ? -1 : 1, 1777, std::move(four_momentum), lepton_number, std::vector<DecayType>{DecayType::Leptonic, DecayType::Hadronic}) {}
 
 // Default constructor
-Tau::Tau() : Lepton("tau", -1, 1777, 1, std::vector<DecayType>{DecayType::Leptonic, DecayType::Hadronic}) {}
+Tau::Tau(int lepton_number) : Lepton("tau", -1, 1777, lepton_number, std::vector<DecayType>{DecayType::Leptonic, DecayType::Hadronic}) {}
 
 //Copy constructor
 Tau::Tau(const Tau &other)

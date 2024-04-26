@@ -16,7 +16,7 @@ std::string to_string(Colour colour)
     return "AntiGreen";
   case Colour::AntiBlue:
     return "AntiBlue";
-  case Colour::None:
+    case Colour::None:
     return "None";
   default:
     return "Unknown Colour";
@@ -37,6 +37,29 @@ std::string to_string(DecayType decay_type)
     return "None";
   default:
     return "Unknown Decay type";
+  }
+}
+
+bool is_anti_colour(Colour colour)
+{
+  switch (colour)
+  {
+  case Colour::Red:
+    return false;
+  case Colour::Green:
+    return false;
+  case Colour::Blue:
+    return false;
+  case Colour::AntiRed:
+    return true;
+  case Colour::AntiGreen:
+    return true;
+  case Colour::AntiBlue:
+    return true;
+  case Colour::None:
+    throw std::invalid_argument("Error: Cannot have AntiNone Colour");
+  default:
+    throw std::invalid_argument("Error: Unrecognised Colour");
   }
 }
 

@@ -18,7 +18,7 @@ public:
   Neutrino(std::unique_ptr<FourMomentum> four_momentum, std::string flavour, bool has_interacted, int lepton_number);
   Neutrino(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, std::string flavour, bool has_interacted, int lepton_number);
   // Default constructor
-  Neutrino();
+  Neutrino(std::string flavour = "none", int lepton_number = 1);
 
   // Special member functions
   Neutrino(const Neutrino &other);                // Copy constructor
@@ -31,8 +31,8 @@ public:
   void set_has_interacted(bool has_interacted);
   void set_flavour(std::string flavour);
 
-  std::string get_flavour() const;
-  bool get_has_interacted() const;
+  std::string get_flavour() const override {return flavour;}
+  bool get_has_interacted() const {return has_interacted;}
 
   // Virtual function overrides
   virtual void print() const override;

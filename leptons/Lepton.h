@@ -20,7 +20,7 @@ protected:
 
 public:
   // Default constructor
-  Lepton();
+  Lepton(int lepton_number = 1);
 
   // Parameterized constructors
   // Constructor without label

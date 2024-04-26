@@ -10,7 +10,7 @@ Muon::Muon(const std::string &label, std::unique_ptr<FourMomentum> four_momentum
     : Lepton("muon", label, (lepton_number == 1) ? -1 : 1, 105.7, std::move(four_momentum), lepton_number), is_isolated(is_isolated) {} // Muons have a charge of -1
 
 // Default constructor for MUon
-Muon::Muon() : Lepton("muon", -1, 105.7, 1), is_isolated(true) {}
+Muon::Muon(int lepton_number) : Lepton("muon", -1, 105.7, lepton_number), is_isolated(true) {}
 
 
 // Copy constructor

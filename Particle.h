@@ -30,11 +30,11 @@ enum class Colour
 class Particle
 {
 private:
-  std::string type = "None";           // Type of particle e.g 'electron', 'muon' ...
-  std::string label = "None"; // Optional label of particle
-  int charge = 0;             // Charge of the particle
-  double spin = 0.0;          // Spin of particle
-  double rest_mass = 0.0;     // Rest mass of particle
+  std::string type;           // Type of particle e.g 'electron', 'muon' ...
+  std::string label; // Optional label of particle
+  double charge;             // Charge of the particle
+  double spin;          // Spin of particle
+  double rest_mass;     // Rest mass of particle
 
   std::vector<DecayType> possible_decay_types;
   std::vector<std::unique_ptr<Particle>> decay_products; 
@@ -46,9 +46,9 @@ protected:
   // Protected attribute so that derived classes can access four momentum object
   std::unique_ptr<FourMomentum> four_momentum;
   // Constructor without label
-  Particle(std::string type, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
+  Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
-  Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
+  Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
 
 public:
   // Default constructor
@@ -56,9 +56,9 @@ public:
 
   // Parameterized constructors
   // Constructor without label
-  Particle(std::string type, int charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types = {DecayType::None});
+  Particle(std::string type, double charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
-  Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types = {DecayType::None});
+  Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types = {DecayType::None});
 
   // Copy constructor
   Particle(const Particle &other);
@@ -94,14 +94,15 @@ public:
   virtual int get_lepton_number() const {return 0;}
   virtual double get_baryon_number() const {return 0;}
   virtual Colour get_colour_charge() const {return Colour::None;}
+  virtual std::string get_flavour() const {return "none";}
 
   // Friend functions
   friend FourMomentum sum_four_momentum(const Particle &a, const Particle &b);
   friend double dot_product_four_momentum(const Particle &a, const Particle &b);
 
   // Lorentz boost functions
-  void lorentz_boost(double v_x, double v_y, double v_z);
-  void lorentz_boost(std::vector<double> v_xyz);
+  void lorentz_boost(long double v_x, long double v_y, long double v_z);
+  void lorentz_boost(std::vector<long double> v_xyz);
 
 
   // Virtual print function

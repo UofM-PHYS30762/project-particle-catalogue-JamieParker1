@@ -5,23 +5,23 @@
 #include <stdexcept> // For std::invalid_argument
 
 // Default constructor
-Lepton::Lepton() : Particle(), lepton_number(0) {}
+Lepton::Lepton(int lepton_number) : Particle((lepton_number == 1) ? "lepton" : "antilepton", (lepton_number == 1) ? -1 : 1, 0.5, 0, std::vector<DecayType>{DecayType::None}), lepton_number(lepton_number) {}
  
 // Protected constructor without label with four momentum
 Lepton::Lepton(std::string type, int charge, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, int lepton_number, std::vector<DecayType> possible_decay_types)
-    : Particle(type, charge, 0.5, rest_mass, std::move(four_momentum), possible_decay_types), lepton_number(lepton_number) {}
+    : Particle((lepton_number == 1) ? type : "anti" + type, charge, 0.5, rest_mass, std::move(four_momentum), possible_decay_types), lepton_number(lepton_number) {}
 
 // Protected constructor with label with four momentum
 Lepton::Lepton(std::string type, const std::string &label, int charge,  double rest_mass, std::unique_ptr<FourMomentum> four_momentum, int lepton_number, std::vector<DecayType> possible_decay_types)
-    : Particle(type, label, charge, 0.5, rest_mass, std::move(four_momentum), possible_decay_types), lepton_number(lepton_number) {}
+    : Particle((lepton_number == 1) ? type : "anti" + type, label, charge, 0.5, rest_mass, std::move(four_momentum), possible_decay_types), lepton_number(lepton_number) {}
 
 // Constructor without label without four momentum
 Lepton::Lepton(std::string type, int charge, double rest_mass, int lepton_number, std::vector<DecayType> possible_decay_types)
-    : Particle(type, charge, 0.5, rest_mass, possible_decay_types), lepton_number(lepton_number) {}
+    : Particle((lepton_number == 1) ? type : "anti" + type, charge, 0.5, rest_mass, possible_decay_types), lepton_number(lepton_number) {}
 
 // Constructor with label without four momentum
 Lepton::Lepton(std::string type, const std::string &label, int charge, double rest_mass, int lepton_number, std::vector<DecayType> possible_decay_types)
-    : Particle(type, label, charge, 0.5, rest_mass, possible_decay_types), lepton_number(lepton_number) {}
+    : Particle((lepton_number == 1) ? type : "anti" + type, label, charge, 0.5, rest_mass, possible_decay_types), lepton_number(lepton_number) {}
 
 // Copy constructor
 Lepton::Lepton(const Lepton &other)

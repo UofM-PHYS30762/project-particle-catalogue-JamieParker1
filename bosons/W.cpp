@@ -11,7 +11,7 @@ W::W(const std::string &label, int charge, std::unique_ptr<FourMomentum> four_mo
     : Boson("w", label, validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
 
 // Default constructor
-W::W(int charge) : Boson("w", charge, 80400, 1, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+W::W(int charge) : Boson("w", validate_charge(charge), 80400, 1, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
 
 // Copy constructor
 W::W(const W &other)

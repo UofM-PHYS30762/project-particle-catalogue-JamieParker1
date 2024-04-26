@@ -16,7 +16,7 @@ public:
   Muon(std::unique_ptr<FourMomentum> four_momentum, bool is_isolated, int lepton_number = 1);
   Muon(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, bool is_isolated, int lepton_number = 1);
   // Default constructor
-  Muon();
+  Muon(int lepton_number = 1);
 
   // Copy constructor
   Muon(const Muon &other);

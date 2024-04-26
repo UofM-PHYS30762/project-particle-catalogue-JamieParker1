@@ -10,7 +10,7 @@ Neutrino::Neutrino(const std::string &label, std::unique_ptr<FourMomentum> four_
     : Lepton("neutrino", label, 0, 1.1e-6, std::move(four_momentum), lepton_number), flavour(std::move(flavour)), has_interacted(has_interacted) {}
 
 // Default constructor
-Neutrino::Neutrino() : Lepton("neutrino", 0, 1.1e-6, 1), flavour("none"), has_interacted(false) {}
+Neutrino::Neutrino(std::string flavour, int lepton_number) : Lepton("neutrino", 0, 1.1e-6, lepton_number), flavour(flavour), has_interacted(false) {}
 
 // Copy constructor 
 Neutrino::Neutrino(const Neutrino &other)
@@ -56,17 +56,6 @@ void Neutrino::set_has_interacted(bool has_interacted)
 void Neutrino::set_flavour(std::string flavour)
 {
   this->flavour = std::move(flavour);
-}
-
-// Getters
-std::string Neutrino::get_flavour() const
-{
-  return flavour;
-}
- 
-bool Neutrino::get_has_interacted() const
-{
-  return has_interacted;
 }
 
 // Virtual function overrides

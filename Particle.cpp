@@ -10,7 +10,7 @@
 Particle::Particle() : charge(0), four_momentum(std::make_unique<FourMomentum>()), possible_decay_types(std::vector<DecayType>{DecayType::None}) {}
 
 // Protected constructor without label with four-momentum
-Particle::Particle(std::string type, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types)
+Particle::Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types)
     : type(type), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum(std::move(four_momentum)), possible_decay_types(possible_decay_types)
 {
   if (four_momentum->get_energy() <= 0)
@@ -28,7 +28,7 @@ Particle::Particle(std::string type, int charge, double spin, double rest_mass, 
 }
 
 // Protected constructor with label with four-momentum
-Particle::Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types)
+Particle::Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types)
     : type(type), label(label), spin(spin), charge(charge), rest_mass(rest_mass), possible_decay_types(possible_decay_types)
 {
   if (four_momentum->get_energy() <= 0)
@@ -45,11 +45,11 @@ Particle::Particle(std::string type, const std::string &label, int charge, doubl
   }
 }
 // Constructor without label without four-momentum
-Particle::Particle(std::string type, int charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types)
+Particle::Particle(std::string type, double charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types)
     : type(type), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum((rest_mass > 0) ? std::make_unique<FourMomentum>(rest_mass, 0, 0, 0, true) : std::make_unique<FourMomentum>(1, 0, 0, 1)), possible_decay_types(possible_decay_types) {}
 
 // Constructor with label without four-momentum
-Particle::Particle(std::string type, const std::string &label, int charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types)
+Particle::Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types)
     : type(type), label(label), charge(charge), spin(spin), rest_mass(rest_mass), four_momentum((rest_mass > 0) ? std::make_unique<FourMomentum>(rest_mass, 0, 0, 0, true) : std::make_unique<FourMomentum>(1, 0, 0, 1)), possible_decay_types(possible_decay_types) {}
 
 // Copy constructor
@@ -173,16 +173,12 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     std::unique_ptr<FourMomentum> product2_fm =  std::make_unique<FourMomentum>(product2_energy, -product_px_magnitude,0,0);
 
     // Find velocity of decaying particle to perform lorentz boost
-    std::vector<double> decaying_particle_velocity = four_momentum->get_velocity_vector();
-    // Perform lorentz boost on rest-frame four momentums
-    std::cout << product1_fm->invariant_mass() << std::endl;
-    std::cout << product2_fm->invariant_mass() << std::endl;
-    
-    product1_fm->lorentz_boost(decaying_particle_velocity);
-    product2_fm->lorentz_boost(decaying_particle_velocity);
+    std::vector<long double> negative_decaying_particle_velocity = four_momentum->get_velocity_vector(false);
 
-    std::cout << product1_fm->invariant_mass() << std::endl;
-    std::cout << product2_fm->invariant_mass() << std::endl;
+    // Perform lorentz boost on rest-frame four momentums by performing lorentz boost by substracting
+    // the decaying particles velocity, back to lab frame   
+    product1_fm->lorentz_boost(negative_decaying_particle_velocity);
+    product2_fm->lorentz_boost(negative_decaying_particle_velocity);
     // Give decay particles their four momenta
     decay_products[0]->set_four_momentum(std::move(product1_fm));
     decay_products[1]->set_four_momentum(std::move(product2_fm));
@@ -193,10 +189,9 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     }
     else
     {
-      std::cout << "Error: Auto-set decay products failed.\n";
+      std::cerr << "Error: Auto-set decay products failed.\n";
       std::cout << "Father fm:" << *four_momentum << std::endl;
-      std::cout << "Product1 fm:" << decay_products[0]->get_four_momentum() << std::endl;
-      std::cout << "Product2 fm:" << decay_products[1]->get_four_momentum() << std::endl;
+      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
       return;
     }
   }
@@ -235,7 +230,10 @@ const FourMomentum &Particle::get_four_momentum() const
   {
     throw std::runtime_error("FourMomentum has not been intitialised.");
   }
-  return *four_momentum;
+  else
+  {
+    return *four_momentum;
+  }
 }
 
 const std::vector<std::unique_ptr<Particle>> &Particle::get_decay_products() const
@@ -265,12 +263,12 @@ double dot_product_four_momentum(const Particle &a, const Particle &b)
 }
 
 // Lorentz boost functions
-void Particle::lorentz_boost(double v_x, double v_y, double v_z)
+void Particle::lorentz_boost(long double v_x, long double v_y, long double v_z)
 {
   four_momentum->lorentz_boost(v_x, v_y, v_z);
 }
 
-void Particle::lorentz_boost(std::vector<double> v_xyz)
+void Particle::lorentz_boost(std::vector<long double> v_xyz)
 {
   four_momentum->lorentz_boost(v_xyz);
 }

@@ -8,12 +8,8 @@
 class FourMomentum 
 {
 private:
-  // double energy;     // Energy component E
   long double energy;     // Energy component E
-
-  // double px, py, pz; // Momentum components along the x, y, and z axes
   long double px, py, pz; // Momentum components along the x, y, and z axes
-
 public:
   // Constructor to initialize the four-momentum components
   // FourMomentum(double energy = 0.0, double px = 0.0, double py = 0.0, double pz = 0.0, bool energy_is_rest_mass = false);
@@ -31,22 +27,22 @@ public:
   void set_momentum(double px, double py, double pz);
 
   // Getters for the four-momentum components
-  double get_energy() const;
-  double get_Px() const;
-  double get_Py() const;
-  double get_Pz() const;
-  double get_velocity_magnitude() const; // In units of C
-  double get_velocity_x() const;
-  double get_velocity_y() const;
-  double get_velocity_z() const;
-  std::vector<double> get_velocity_vector() const;
+  long double get_energy() const;
+  long double get_Px() const;
+  long double get_Py() const;
+  long double get_Pz() const;
+  long double get_velocity_magnitude() const; // In units of C
+  long double get_velocity_x() const;
+  long double get_velocity_y() const;
+  long double get_velocity_z() const;
+  std::vector<long double> get_velocity_vector(bool positive = true) const;
 
   // Function to calculate the invariant mass (magnitude) of the four-momentum
   double invariant_mass() const;
   // Function to perform Lorentz boost to four-momentum
   // void lorentz_boost(double v_x, double v_y, double v_z);
   void lorentz_boost(long double v_x, long double v_y, long double v_z);
-  void lorentz_boost(std::vector<double> v_xyz);
+  void lorentz_boost(std::vector<long double> v_xyz);
 
   // Overloaded operators
   FourMomentum operator+(const FourMomentum& rhs) const; // Addition
