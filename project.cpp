@@ -16,13 +16,6 @@
 #include "bosons/Higgs.h"
 
 #include "quarks/Quark.h"
-#include "quarks/Up.h"
-#include "quarks/Down.h"
-#include "quarks/Bottom.h"
-#include "quarks/Charm.h"
-#include "quarks/Top.h"
-#include "quarks/Strange.h"
-
 #include "quarks/QuarkTemplate.h"
 #include "quarks/IndividualQuarks.h"
 
@@ -58,12 +51,12 @@ void fill_catalogue(ParticleCatalogue<Particle>& catalogue)
   Charm *charm = new Charm();
   Top *top = new Top();
   Strange *strange = new Strange();
-  Up *anti_up = new Up(true);
-  Down *anti_down = new Down(true);
-  Bottom *anti_bottom = new Bottom(true);
-  Charm *anti_charm = new Charm(true);
-  Top *anti_top = new Top(true);
-  Strange *anti_strange = new Strange(true);
+  // Up *anti_up = new Up(true);
+  // Down *anti_down = new Down(true);
+  // Bottom *anti_bottom = new Bottom(true);
+  // Charm *anti_charm = new Charm(true);
+  // Top *anti_top = new Top(true);
+  // Strange *anti_strange = new Strange(true);
 
   catalogue.add_particle(tau);
   catalogue.add_particle(electron);
@@ -91,12 +84,12 @@ void fill_catalogue(ParticleCatalogue<Particle>& catalogue)
   catalogue.add_particle(top);
   catalogue.add_particle(charm);
   catalogue.add_particle(strange);
-  catalogue.add_particle(anti_up);
-  catalogue.add_particle(anti_down);
-  catalogue.add_particle(anti_bottom);
-  catalogue.add_particle(anti_top);
-  catalogue.add_particle(anti_charm);
-  catalogue.add_particle(anti_strange);
+  // catalogue.add_particle(anti_up);
+  // catalogue.add_particle(anti_down);
+  // catalogue.add_particle(anti_bottom);
+  // catalogue.add_particle(anti_top);
+  // catalogue.add_particle(anti_charm);
+  // catalogue.add_particle(anti_strange);
 }
 
 void testing_catalogue()
@@ -148,10 +141,22 @@ void auto_decay_product_example()
 
 int main()
 {
-  Bottom_test bottom = Bottom_test();
-  bottom.print();
-  Up_test up = Up_test();
+  Bottom bottom = Bottom();
+  Up up = Up();
+  Charm charm = Charm();
+  Down down = Down();
+  Strange strange = Strange(true);
+  Top top = Top(Colour::AntiBlue, true);
+
   up.print();
+  down.print();
+  strange.print();
+  top.print();
+  bottom.print();
+  charm.print();
+
+  
+
   //testing_catalogue(); 
   return 0;
 }

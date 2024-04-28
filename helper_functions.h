@@ -8,6 +8,7 @@
 std::string to_string(Colour colour);
 std::string to_string(DecayType decay_type);
 bool is_anti_colour(Colour colour);
+Colour get_anti_colour(Colour colour);
 
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find);
 double energy_sum(double momentum, double product1_rest_mass, double product2_rest_mass);

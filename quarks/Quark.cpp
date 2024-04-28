@@ -6,23 +6,50 @@
 #include <stdexcept> // For std::invalid_argument
 
 // Default constructor
-Quark::Quark(double baryon_number, Colour colour_charge,  std::string flavour) : Particle("quark", 0, 0.5, 1, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+// Quark::Quark(double baryon_number, Colour colour_charge,  std::string flavour) : Particle("quark", 0, 0.5, 1, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+Quark::Quark(double baryon_number, Colour colour_charge,  std::string flavour) : Particle("quark", 0, 0.5, 1, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
+{
+  set_colour_charge(colour_charge);
+}
 
 // Protected constructor without label with four momentum
+// Quark::Quark(std::string flavour, double charge, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charge)
+//     : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
 Quark::Quark(std::string flavour, double charge, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charge)
-    : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+    : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
+{
+  set_colour_charge(colour_charge);
+}
+
 
 // Protected constructor with label with four momentum
+// Quark::Quark(std::string flavour, const std::string &label, double charge,  double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charger)
+//     : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
 Quark::Quark(std::string flavour, const std::string &label, double charge,  double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charger)
-    : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+    : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
+{
+  set_colour_charge(colour_charge);
+}
+
 
 // Constructor without label without four momentum
+// Quark::Quark(std::string flavour, double charge, double rest_mass, double baryon_number, Colour colour_charge)
+//     : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
 Quark::Quark(std::string flavour, double charge, double rest_mass, double baryon_number, Colour colour_charge)
-    : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+    : Particle((baryon_number > 0) ? "quark" : "antiquark", charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
+{
+  set_colour_charge(colour_charge);
+}
 
 // Constructor with label without four momentum
+// Quark::Quark(std::string flavour, const std::string &label, double charge, double rest_mass, double baryon_number, Colour colour_charge)
+//     : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
 Quark::Quark(std::string flavour, const std::string &label, double charge, double rest_mass, double baryon_number, Colour colour_charge)
-    : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), colour_charge(colour_charge), flavour(flavour) {}
+    : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
+{
+  set_colour_charge(colour_charge);
+}
+
 
 // Copy constructor
 Quark::Quark(const Quark &other)

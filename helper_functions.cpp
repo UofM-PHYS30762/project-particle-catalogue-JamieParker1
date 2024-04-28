@@ -63,6 +63,30 @@ bool is_anti_colour(Colour colour)
   }
 }
 
+Colour get_anti_colour(Colour colour)
+{
+  switch (colour)
+  {
+  case Colour::Red:
+    return Colour::AntiRed;
+  case Colour::Green:
+    return Colour::AntiGreen;
+  case Colour::Blue:
+    return Colour::AntiBlue;
+  case Colour::AntiRed:
+    return Colour::Red;
+  case Colour::AntiGreen:
+    return Colour::Green;
+  case Colour::AntiBlue:
+    return Colour::Blue;
+    case Colour::None:
+    return Colour::None;
+  default:
+    throw std::invalid_argument("Error: Unrecognised Colour");
+  }
+}
+
+
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find)
 {
   // Iterate over the vector to check if the given type is present
