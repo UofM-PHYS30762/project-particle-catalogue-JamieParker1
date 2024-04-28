@@ -13,4 +13,6 @@ bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType ty
 double energy_sum(double momentum, double product1_rest_mass, double product2_rest_mass);
 double find_momentum_of_products(double product1_rest_mass, double product2_rest_mass, double decay_particle_rest_mass, double tolerance = 1e-6);
 
+void clear_screen();
+
 #endif // HELPER_FUNCTIONS_H

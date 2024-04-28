@@ -103,3 +103,15 @@ double find_momentum_of_products(double product1_rest_mass, double product2_rest
   }
   return (low + high) / 2;
 }
+
+// Clears console screen based on operating system
+void clear_screen()
+{
+// Clears terminal window
+#ifdef _WIN32 // check if program is compiled on Windows
+  system("cls");
+#else
+  // if not windows, clear screen using ANSI escape code
+  std::cout << "\033[2J\033[1;1H";
+#endif
+}

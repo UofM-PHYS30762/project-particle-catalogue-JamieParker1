@@ -108,7 +108,7 @@ public:
     return sub_container;
   }
 
-  // Print information about one or more particles
+  // Print information about one or more particles of same type
   template <typename SubType>
   void print_info_by_type() const
   {

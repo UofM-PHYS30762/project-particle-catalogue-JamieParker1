@@ -23,14 +23,15 @@
 #include "quarks/Top.h"
 #include "quarks/Strange.h"
 
+#include "quarks/QuarkTemplate.h"
+#include "quarks/IndividualQuarks.h"
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-void testing_catalogue()
+void fill_catalogue(ParticleCatalogue<Particle>& catalogue)
 {
-  ParticleCatalogue<Particle> catalogue;
-
   Tau *tau = new Tau();
   Electron *electron = new Electron();
   Muon *muon = new Muon();
@@ -64,14 +65,6 @@ void testing_catalogue()
   Top *anti_top = new Top(true);
   Strange *anti_strange = new Strange(true);
 
-  // Example of setting decay products
-  std::vector<std::unique_ptr<Particle>> decay_products;
-  auto e_decay = std::make_unique<Electron>();
-  auto ae_decay = std::make_unique<Electron>(-1);
-  decay_products.push_back(std::move(e_decay));
-  decay_products.push_back(std::move(ae_decay));
-  z->auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
-  
   catalogue.add_particle(tau);
   catalogue.add_particle(electron);
   catalogue.add_particle(muon);
@@ -104,6 +97,23 @@ void testing_catalogue()
   catalogue.add_particle(anti_top);
   catalogue.add_particle(anti_charm);
   catalogue.add_particle(anti_strange);
+}
+
+void testing_catalogue()
+{
+  ParticleCatalogue<Particle> catalogue;
+  fill_catalogue(catalogue);
+
+  size_t totalParticles = catalogue.get_number_of_particles();
+  std::map<std::string, int> particle_counts = catalogue.get_particle_count_by_type();
+  FourMomentum total_four_momentum = catalogue.sum_four_momenta();
+
+  std::cout << "\nNumber of particles: " << totalParticles << std::endl
+            << std::endl;
+  for (const auto &pair : particle_counts)
+  {
+    std::cout << "Type: " << pair.first << ", Count: " << pair.second << std::endl;
+  }
 
   std::cout << "Printing all leptons:\n";
   catalogue.print_info_by_type<Lepton>();
@@ -114,17 +124,8 @@ void testing_catalogue()
   std::cout << "\nPrinting all quarks:\n";
   catalogue.print_info_by_type<Quark>();
 
-  size_t totalParticles = catalogue.get_number_of_particles();
-  std::map<std::string, int> particleCounts = catalogue.get_particle_count_by_type();
-  FourMomentum totalFourMomentum = catalogue.sum_four_momenta();
-
-  std::cout << "\nNumber of particles: " << totalParticles << std::endl
-            << std::endl;
-  for (const auto &pair : particleCounts)
-  {
-    std::cout << "Type: " << pair.first << ", Count: " << pair.second << std::endl;
-  }
-  std::cout << "\nFour momentum sum:" << totalFourMomentum << std::endl;
+  
+  std::cout << "\nFour momentum sum:" << total_four_momentum << std::endl;
 }
 
 void auto_decay_product_example()
@@ -147,6 +148,10 @@ void auto_decay_product_example()
 
 int main()
 {
-  testing_catalogue(); 
+  Bottom_test bottom = Bottom_test();
+  bottom.print();
+  Up_test up = Up_test();
+  up.print();
+  //testing_catalogue(); 
   return 0;
 }
