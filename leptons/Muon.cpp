@@ -64,5 +64,6 @@ bool Muon::get_is_isolated() const
 void Muon::print() const
 {
   Lepton::print(); // Call the base class print function
+  std::cout << "\033[1m\033[4mMuon-Specific Properties:\033[0m\n";
   std::cout << "\033[1mIs Isolated: \033[0m" << (is_isolated ? "Yes" : "No") << std::endl;
 }

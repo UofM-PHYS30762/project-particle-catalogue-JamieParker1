@@ -3,9 +3,10 @@
 #include "../FourMomentum.h" 
 #include <iostream>  // For std::cout
 #include <stdexcept> // For std::invalid_argument
+#include <iomanip>
 
 // Default constructor
-Boson::Boson() : Particle("boson", 0, 0, 0,  std::vector<DecayType>{DecayType::None}) {}
+Boson::Boson() : Particle("boson", "General Boson", 0, 0, 0,  std::vector<DecayType>{DecayType::None}) {}
  
 // Protected constructor without label with four momentum
 Boson::Boson(std::string type, int charge, double rest_mass, int spin, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types)
@@ -54,8 +55,3 @@ Boson &Boson::operator=(Boson &&other) noexcept
   return *this;
 }
 
-// Virtual print function
-void Boson::print() const
-{
-  Particle::print();
-}

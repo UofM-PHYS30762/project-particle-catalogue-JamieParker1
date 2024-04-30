@@ -1,3 +1,4 @@
+
 #ifndef PARTICLE_CATALOGUE_H
 #define PARTICLE_CATALOGUE_H
 
@@ -8,6 +9,8 @@
 #include <typeinfo>
 #include <typeindex>
 #include <set>
+#include <algorithm>
+#include <numeric>
 
 template <typename T>
 class ParticleCatalogue
@@ -45,12 +48,8 @@ public:
 
   void print_all() const
   {
-    for (const auto &particle : particles)
-    {
-      std::cout << "-------------\n";
-      particle->print();
-      std::cout << "-------------\n";
-    }
+    std::for_each(particles.begin(), particles.end(), [](const T *particle)
+                  { particle->print(); });
   }
 
   // Get the total number of particles
@@ -63,8 +62,8 @@ public:
   std::map<std::string, int> get_particle_count_by_type() const
   {
     std::map<std::string, int> counts;
-    for (const auto &particle : particles)
-    {
+    std::for_each(particles.begin(), particles.end(), [&counts](const T *particle)
+                  {
       // Get the type name as a string
       std::string typeName = typeid(*particle).name();
 
@@ -76,20 +75,15 @@ public:
       }
 
       // Increment the count for the type
-      counts[typeName]++;
-    }
+      counts[typeName]++; });
     return counts;
   }
 
   // Sum the four-momentum of all particles
   FourMomentum sum_four_momenta() const
   {
-    FourMomentum total;
-    for (const auto &particle : particles)
-    {
-      total = total + particle->get_four_momentum();
-    }
-    return total;
+    return std::accumulate(particles.begin(), particles.end(), FourMomentum(), [](const FourMomentum &sum, const T *particle)
+                           { return sum + particle->get_four_momentum(); });
   }
 
   // Get a sub-container of pointers to particles of the same kind
@@ -97,14 +91,8 @@ public:
   std::vector<SubType *> get_sub_container() const
   {
     std::vector<SubType *> sub_container;
-    for (auto &particle : particles)
-    {
-      SubType *casted = dynamic_cast<SubType *>(particle);
-      if (casted)
-      {
-        sub_container.push_back(casted);
-      }
-    }
+    std::copy_if(particles.begin(), particles.end(), std::back_inserter(sub_container), [](const T *particle)
+                 { return dynamic_cast<SubType *>(particle) != nullptr; });
     return sub_container;
   }
 
@@ -112,16 +100,24 @@ public:
   template <typename SubType>
   void print_info_by_type() const
   {
-    for (const auto &particle : particles)
-    {
-      SubType *casted = dynamic_cast<SubType *>(particle);
+    std::for_each(particles.begin(), particles.end(), [](const T *particle)
+                  {
+      const SubType *casted = dynamic_cast<const SubType *>(const_cast<T *>(particle));
       if (casted)
       {
-        std::cout << "-------------\n";
         casted->print();
-        std::cout << "-------------\n";
-      }
-    }
+      } });
+  }
+
+  template <typename SubType>
+  void print_info_by_exact_type() const
+  {
+    std::for_each(particles.begin(), particles.end(), [](const T *particle)
+                  {
+          if (typeid(*particle) == typeid(SubType))
+          {
+              particle->print();
+          } });
   }
 };
 

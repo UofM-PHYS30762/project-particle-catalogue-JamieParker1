@@ -51,14 +51,28 @@ void Z::print() const
   if (!this->get_decay_products().empty())
   {
     std::cout << "\033[1mDecay Products:\033[0m" << std::endl;
-    for (const auto& product : this->get_decay_products()) 
+    for (const auto &product : this->get_decay_products())
     {
+      std::ostringstream oss;
+      std::streambuf* coutBuf = std::cout.rdbuf();
+      std::cout.rdbuf(oss.rdbuf());
+
       product->print();
+      std::cout.rdbuf(coutBuf);
+
+      std::istringstream iss(oss.str());
+      std::string line;
+      std::string indent(4, ' ');
+
+      while (std::getline(iss, line))
+      {
+        std::cout << indent << line << std::endl;
+      }
     }
   }
   else
   {
-    std::cout << "\033[1mNo Decay Products\033[0m" << std::endl;
+    std::cout << "\033[1mDecay Products: \033[0mNo Specific Decay Products To Display" << std::endl;
   }
 }
 

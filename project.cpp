@@ -2,6 +2,9 @@
 #include "Particle.h"
 #include "ParticleCatalogue.h"
 
+#include "showcase.h"
+#include "user_interface.h"
+
 #include "leptons/Lepton.h"
 #include "leptons/Electron.h"
 #include "leptons/Muon.h"
@@ -22,75 +25,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
-void fill_catalogue(ParticleCatalogue<Particle>& catalogue)
-{
-  Tau *tau = new Tau();
-  Electron *electron = new Electron();
-  Muon *muon = new Muon();
-  Neutrino *tau_neutrino = new Neutrino("tau");
-  Neutrino *electron_neutrino = new Neutrino("electron");
-  Neutrino *muon_neutrino = new Neutrino("muon");
-  Tau *anti_tau = new Tau(-1);
-  Electron *anti_electron = new Electron(-1);
-  Muon *anti_muon = new Muon(-1);
-  Neutrino *anti_tau_neutrino = new Neutrino("tau", -1);
-  Neutrino *anti_electron_neutrino = new Neutrino("electron", -1);
-  Neutrino *anti_muon_neutrino = new Neutrino("muon", -1);
-
-  Photon *photon = new Photon();
-  Gluon *gluon = new Gluon();
-  Z *z = new Z();
-  W *w_plus = new W();
-  W *w_minus = new W(-1);
-  Higgs *higgs = new Higgs();
-
-  Up *up = new Up();
-  Down *down = new Down();
-  Bottom *bottom = new Bottom();
-  Charm *charm = new Charm();
-  Top *top = new Top();
-  Strange *strange = new Strange();
-  // Up *anti_up = new Up(true);
-  // Down *anti_down = new Down(true);
-  // Bottom *anti_bottom = new Bottom(true);
-  // Charm *anti_charm = new Charm(true);
-  // Top *anti_top = new Top(true);
-  // Strange *anti_strange = new Strange(true);
-
-  catalogue.add_particle(tau);
-  catalogue.add_particle(electron);
-  catalogue.add_particle(muon);
-  catalogue.add_particle(tau_neutrino);
-  catalogue.add_particle(electron_neutrino);
-  catalogue.add_particle(muon_neutrino);
-  catalogue.add_particle(anti_tau);
-  catalogue.add_particle(anti_electron);
-  catalogue.add_particle(anti_muon);
-  catalogue.add_particle(anti_tau_neutrino);
-  catalogue.add_particle(anti_electron_neutrino);
-  catalogue.add_particle(anti_muon_neutrino);
-  
-  catalogue.add_particle(photon);
-  catalogue.add_particle(gluon);
-  catalogue.add_particle(z);
-  catalogue.add_particle(w_plus);
-  catalogue.add_particle(w_minus);
-  catalogue.add_particle(higgs);
-
-  catalogue.add_particle(up);
-  catalogue.add_particle(down);
-  catalogue.add_particle(bottom);
-  catalogue.add_particle(top);
-  catalogue.add_particle(charm);
-  catalogue.add_particle(strange);
-  // catalogue.add_particle(anti_up);
-  // catalogue.add_particle(anti_down);
-  // catalogue.add_particle(anti_bottom);
-  // catalogue.add_particle(anti_top);
-  // catalogue.add_particle(anti_charm);
-  // catalogue.add_particle(anti_strange);
-}
+#include <sstream>
+#include <limits>
 
 void testing_catalogue()
 {
@@ -117,7 +53,6 @@ void testing_catalogue()
   std::cout << "\nPrinting all quarks:\n";
   catalogue.print_info_by_type<Quark>();
 
-  
   std::cout << "\nFour momentum sum:" << total_four_momentum << std::endl;
 }
 
@@ -132,7 +67,7 @@ void auto_decay_product_example()
 
   decay_products.push_back(std::move(e_decay));
   decay_products.push_back(std::move(ae_decay));
-  
+
   std::unique_ptr<FourMomentum> z_fm = std::make_unique<FourMomentum>(91200, 10, 10, 10, true);
   z.set_four_momentum(std::move(z_fm));
   z.auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
@@ -141,22 +76,74 @@ void auto_decay_product_example()
 
 int main()
 {
-  Bottom bottom = Bottom();
-  Up up = Up();
-  Charm charm = Charm();
-  Down down = Down();
-  Strange strange = Strange(true);
-  Top top = Top(Colour::AntiBlue, true);
+  // ParticleCatalogue<Particle> showcase_catalogue;
+  // ParticleCatalogue<Particle> user_catalogue;
+  // main_menu_navigation(showcase_catalogue, user_catalogue);
 
-  up.print();
-  down.print();
-  strange.print();
-  top.print();
-  bottom.print();
-  charm.print();
+  // showcase_basic_class_hierarchy();
+  // showcase_four_momentum_class();
+  // showcase_particle_attributes_and_functionality();
+  //  Auto settinf decay products for Higgs, Z and W
+
+
+  Tau tau;
+  std::unique_ptr<Electron> electron_decay = std::make_unique<Electron>();
+  std::unique_ptr<Neutrino> electron_neutrino = std::make_unique<Neutrino>("electron", -1);
+  std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>();
+  std::vector<std::unique_ptr<Particle>> decay_products;
+  decay_products.push_back(std::move(electron_decay));
+  decay_products.push_back(std::move(electron_neutrino));
+  decay_products.push_back(std::move(tau_neutrino));
+  tau.auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
+  tau.print();
+
+  std::cout << "HERE";
+
+  // double m1 = 1.0;  // Rest mass of the first decay particle
+  // double m2 = 4.0;  // Rest mass of the second decay particle
+  // double m3 = 3.0;  // Rest mass of the third decay particle
+  // double m_particle = 10.0;  // Rest mass of the decaying particle
+
+  // std::vector<double> momenta = find_momentum_of_products_three_body(m1, m2, m3, m_particle);
+
+  // // Access the momentum components
+  // double p1x = momenta[0];
+  // double p2x = momenta[1];
+  // double p2y = momenta[2];
+  // double p3x = momenta[3];
+  // double p3y = momenta[4];
+
+  // std::cout << "HERE" << std::endl;
+  // std::cout << "p1x: " << p1x << std::endl;
+  // std::cout << "p2x: " << p2x << std::endl;
+  // std::cout << "p2y: " << p2y << std::endl;
+  // std::cout << "p3x: " << p3x << std::endl;
+  // std::cout << "p3y: " << p3y << std::endl;
+
+  // std::cout << "p2x + p3x: " << p2x + p3x << std::endl;
+  // std::cout << "p2y + p3y: " << p2y + p3y << std::endl;
+
+  // double E1 = std::sqrt(m1 * m1 + p1x * p1x);
+  // double E2 = std::sqrt(m2 * m2 + p2x * p2x + p2y * p2y);
+  // double E3 = std::sqrt(m3 * m3 + p3x * p3x + p3y * p3y);
+
+  // FourMomentum decaying(10, 5, 5, 5, true);
+  // FourMomentum d1(E1, p1x, 0, 0);
+  // FourMomentum d2(E2, p2x, p2y);
+  // FourMomentum d3(E3, p3x, p3y, 0);
+  // d1.lorentz_boost(decaying.get_velocity_vector(false));
+  // d2.lorentz_boost(decaying.get_velocity_vector(false));
+  // d3.lorentz_boost(decaying.get_velocity_vector(false));
+
+  // std::cout << "1 " << d1 << std::endl;
+  // std::cout << "2 " << d2 << std::endl;
+  // std::cout << "3 " << d3 << std::endl;
+  // std::cout << "P " << decaying << std::endl;
+
+  // std::cout << "sum " << d1 + d2 + d3;
 
   
 
-  //testing_catalogue(); 
+
   return 0;
 }

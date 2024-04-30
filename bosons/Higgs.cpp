@@ -1,17 +1,18 @@
 #include "Higgs.h"
 #include "../helper_functions.h"
-#include <utility>   // For std::move
+#include <utility> // For std::move
+#include <iomanip>
 
-// Constructor without label 
+// Constructor without label
 Higgs::Higgs(std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("higgs", 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic}) {}
+    : Boson("higgs", 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic, DecayType::Bosonic}) {}
 
-// Constructor with label 
+// Constructor with label
 Higgs::Higgs(const std::string &label, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("higgs", label, 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic}) {}
+    : Boson("higgs", label, 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic, DecayType::Bosonic}) {}
 
 // Default constructor
-Higgs::Higgs() : Boson("higgs", 0, 126000, 0, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic}) {}
+Higgs::Higgs() : Boson("higgs", 0, 126000, 0, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic, DecayType::Electromagnetic, DecayType::Bosonic}) {}
 
 // Copy constructor
 Higgs::Higgs(const Higgs &other)
@@ -44,21 +45,35 @@ Higgs &Higgs::operator=(Higgs &&other) noexcept
   return *this;
 }
 
-// Override the print function
+//Override the print function
 void Higgs::print() const
 {
   Boson::print(); // Print the base class attributes
   if (!this->get_decay_products().empty())
   {
     std::cout << "\033[1mDecay Products:\033[0m" << std::endl;
-    for (const auto& product : this->get_decay_products()) 
+    for (const auto &product : this->get_decay_products())
     {
+      std::ostringstream oss;
+      std::streambuf* coutBuf = std::cout.rdbuf();
+      std::cout.rdbuf(oss.rdbuf());
+
       product->print();
+      std::cout.rdbuf(coutBuf);
+
+      std::istringstream iss(oss.str());
+      std::string line;
+      std::string indent(4, ' ');
+
+      while (std::getline(iss, line))
+      {
+        std::cout << indent << line << std::endl;
+      }
     }
   }
   else
   {
-    std::cout << "\033[1mNo Decay Products\033[0m" << std::endl;
+    std::cout << "\033[1mDecay Products: \033[0mNo Specific Decay Products To Display" << std::endl;
   }
 }
 

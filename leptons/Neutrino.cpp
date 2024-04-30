@@ -1,5 +1,6 @@
 #include "Neutrino.h"
 #include <iostream>
+#include <iomanip>
 
 // Constructor without label
 Neutrino::Neutrino(std::unique_ptr<FourMomentum> four_momentum, std::string flavour, bool has_interacted, int lepton_number)
@@ -61,8 +62,17 @@ void Neutrino::set_flavour(std::string flavour)
 // Virtual function overrides
 void Neutrino::print() const
 {
+
+  const int columnWidth = 29;  // Set the width for each column
+  std::cout << std::left;  // Align output to the left
+
   // Call to Lepton's print to display common properties
   Lepton::print();
-  std::cout << "\033[1mNeutrino Flavour: \033[0m" << flavour << ", \033[1mHas Interacted: \033[0m" << (has_interacted ? "Yes" : "No") << std::endl;
+  std::cout << "\033[1m\033[4mNeutrino-Specific Properties:\033[0m\n";
+
+  std::cout << std::setw(columnWidth) << "\033[1mNeutrino Flavour:\033[0m" << flavour << std::endl;
+  std::cout << std::setw(columnWidth) << "\033[1mHas Interacted:\033[0m" << (has_interacted ? "Yes" : "No") << std::endl;
+
+
 }
  

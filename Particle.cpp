@@ -4,10 +4,10 @@
 #include "helper_functions.h"
 #include <iostream>  // For std::cout
 #include <stdexcept> // For std::invalid_argument
-
+#include <iomanip>
 
 // Default constructor
-Particle::Particle() : charge(0), four_momentum(std::make_unique<FourMomentum>()), possible_decay_types(std::vector<DecayType>{DecayType::None}) {}
+Particle::Particle() : type("particle"), label("General Particle"), charge(0), rest_mass(1), four_momentum(std::make_unique<FourMomentum>(1, 0, 0, 0, true)), possible_decay_types(std::vector<DecayType>{DecayType::None}) {}
 
 // Protected constructor without label with four-momentum
 Particle::Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types)
@@ -28,7 +28,7 @@ Particle::Particle(std::string type, double charge, double spin, double rest_mas
 }
 
 // Protected constructor with label with four-momentum
-Particle::Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types)
+Particle::Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types)
     : type(type), label(label), spin(spin), charge(charge), rest_mass(rest_mass), possible_decay_types(possible_decay_types)
 {
   if (four_momentum->get_energy() <= 0)
@@ -146,6 +146,12 @@ void Particle::set_decay_products(std::vector<std::unique_ptr<Particle>> decay_p
   }
 }
 
+
+
+
+
+
+
 void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type)
 {
   if (decay_products.size() == 2)
@@ -154,9 +160,17 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     // Only energy in system is decaying particle's rest mass
     if (!(rest_mass > (decay_products[0]->get_rest_mass() + decay_products[1]->get_rest_mass())))
     {
-      std::cerr << "Error: Rest masses of decay particles exceeds decaying particle's\n";
-      return;
+      if (decay_products[0]->get_is_virtual() && decay_products[1]->get_is_virtual())
+      {
+        auto_set_decay_products_virtual(std::move(decay_products), decay_type);
+        return;
+      }
+      else
+      {
+        throw std::invalid_argument("Error: Rest masses of decay particles exceeds decaying particle's. Decay products must be virtual.");
+      }
     }
+
     // Arbitrarily choose, in rest frame, decaying particles move along x axis
     // E1^2 = P1^2 + M1^2, E2^2 = P2^2 + M2^2 (P1^2 = P2^2 = P^2, E1+E2=M_particle)
     // sqrt(P^2 + M1^2) + sqrt(P^2 + M2^2) = M_particle
@@ -164,19 +178,20 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     double product2_rest_mass = decay_products[1]->get_rest_mass();
 
     double product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, rest_mass);
-    double product1_energy = std::sqrt(product1_rest_mass*product1_rest_mass + product_px_magnitude*product_px_magnitude);
-    double product2_energy = std::sqrt(product2_rest_mass*product2_rest_mass + product_px_magnitude*product_px_magnitude);
-    
+    // double product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, four_momentum->get_energy());
+    double product1_energy = std::sqrt(product1_rest_mass * product1_rest_mass + product_px_magnitude * product_px_magnitude);
+    double product2_energy = std::sqrt(product2_rest_mass * product2_rest_mass + product_px_magnitude * product_px_magnitude);
+
     // Have first particle move +ve along x axis
-    std::unique_ptr<FourMomentum> product1_fm =  std::make_unique<FourMomentum>(product1_energy, product_px_magnitude,0,0); 
+    std::unique_ptr<FourMomentum> product1_fm = std::make_unique<FourMomentum>(product1_energy, product_px_magnitude, 0, 0);
     // Have second particle move -ve along x axis
-    std::unique_ptr<FourMomentum> product2_fm =  std::make_unique<FourMomentum>(product2_energy, -product_px_magnitude,0,0);
+    std::unique_ptr<FourMomentum> product2_fm = std::make_unique<FourMomentum>(product2_energy, -product_px_magnitude, 0, 0);
 
     // Find velocity of decaying particle to perform lorentz boost
     std::vector<long double> negative_decaying_particle_velocity = four_momentum->get_velocity_vector(false);
 
     // Perform lorentz boost on rest-frame four momentums by performing lorentz boost by substracting
-    // the decaying particles velocity, back to lab frame   
+    // the decaying particles velocity, back to lab frame
     product1_fm->lorentz_boost(negative_decaying_particle_velocity);
     product2_fm->lorentz_boost(negative_decaying_particle_velocity);
     // Give decay particles their four momenta
@@ -195,9 +210,176 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
       return;
     }
   }
+  else if (decay_products.size() == 3)
+  {
+    // Work in decaying particle's rest frame
+    // Only energy in system is decaying particle's rest mass
+    if (!(rest_mass > (decay_products[0]->get_rest_mass() + decay_products[1]->get_rest_mass() + decay_products[2]->get_rest_mass())))
+    {
+      if (decay_products[0]->get_is_virtual() && decay_products[1]->get_is_virtual() && decay_products[2]->get_is_virtual())
+      {
+        auto_set_decay_products_virtual(std::move(decay_products), decay_type);
+        return;
+      }
+      else
+      {
+        throw std::invalid_argument("Error: Rest masses of decay particles exceeds decaying particle's. Decay products must be virtual.");
+      }
+    }
+
+    // Arbitrarily choose, in rest frame, first decaying particle moves along x axis
+    // Other two move 120 degrees away from x axis in x-y plane
+    // E1^2 = P1X^2 + M1^2
+    // E2^2 = P2X^2 + P2Y^2 + M2^2
+    // E3^2 = P3X^2 + P3Y^2 + M3^2
+    // E1 + E2 + E3 = M_particle
+    // E1 >= M1, E2 >= M2, E3 >= M3, 
+    // P2X + P3X = -P1X
+    // P2Y = - P3Y
+    // sqrt(P1X^2 + M1^2) + sqrt(P2X^2 + P2Y^2 + M2^2) + sqrt(P3X^2 + P3Y^2 + M3^2) = M_particle
+    
+    double product1_rest_mass = decay_products[0]->get_rest_mass();
+    double product2_rest_mass = decay_products[1]->get_rest_mass();
+    double product3_rest_mass = decay_products[2]->get_rest_mass();
+
+    // Find momenta of decay particles in x-y plane: p1x, p2x, p2y, p3x, p3y
+    std::vector<double> momenta = find_momentum_of_products_three_body(product1_rest_mass, product2_rest_mass, product3_rest_mass, rest_mass);
+    // Access the momentum components
+    double p1x = momenta[0];
+    double p2x = momenta[1];
+    double p2y = momenta[2];
+    double p3x = momenta[3];
+    double p3y = momenta[4];
+    
+    double product1_energy = std::sqrt(product1_rest_mass * product1_rest_mass + p1x * p1x);
+    double product2_energy = std::sqrt(product2_rest_mass * product2_rest_mass + p2x * p2x + p2y * p2y);
+    double product3_energy = std::sqrt(product3_rest_mass * product3_rest_mass + p3x * p3x + p3y * p3y);
+    
+    std::unique_ptr<FourMomentum> product1_fm = std::make_unique<FourMomentum>(product1_energy, p1x, 0, 0);
+    std::unique_ptr<FourMomentum> product2_fm = std::make_unique<FourMomentum>(product2_energy, p2x, p2y, 0);
+    std::unique_ptr<FourMomentum> product3_fm = std::make_unique<FourMomentum>(product3_energy, p3x, p3y, 0);
+
+    std::vector<long double> negative_decaying_particle_velocity = four_momentum->get_velocity_vector(false);
+    product1_fm->lorentz_boost(negative_decaying_particle_velocity);
+    product2_fm->lorentz_boost(negative_decaying_particle_velocity);
+    product3_fm->lorentz_boost(negative_decaying_particle_velocity);
+
+    decay_products[0]->set_four_momentum(std::move(product1_fm));
+    decay_products[1]->set_four_momentum(std::move(product2_fm));
+    decay_products[2]->set_four_momentum(std::move(product3_fm));
+    
+    // Validate these auto products
+    if (validate_decay_products(decay_products, decay_type))
+    {
+      this->decay_products = std::move(decay_products);
+    }
+    else
+    {
+      std::cerr << "Error: Auto-set decay products failed.\n";
+      std::cout << "Father fm:" << *four_momentum << std::endl;
+      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() + decay_products[2]->get_four_momentum() << std::endl;
+      return;
+    }
+  }
   return;
 }
 
+void Particle::auto_set_decay_products_virtual(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type)
+{
+
+  if (decay_products.size() == 2)
+  {
+    // Get the energy and momentum of the decaying particle in the lab frame
+    double decaying_particle_energy = four_momentum->get_energy();
+    double decaying_particle_px = four_momentum->get_Px();
+    double decaying_particle_py = four_momentum->get_Py();
+    double decaying_particle_pz = four_momentum->get_Pz();
+
+    // Split the energy and momentum equally between the two decay products
+    double product1_energy = decaying_particle_energy / 2;
+    double product1_px = decaying_particle_px / 2;
+    double product1_py = decaying_particle_py / 2;
+    double product1_pz = decaying_particle_pz / 2;
+
+    double product2_energy = decaying_particle_energy / 2;
+    double product2_px = decaying_particle_px / 2;
+    double product2_py = decaying_particle_py / 2;
+    double product2_pz = decaying_particle_pz / 2;
+
+    // Create the four-momenta for the decay products in the lab frame
+    std::unique_ptr<FourMomentum> product1_fm = std::make_unique<FourMomentum>(product1_energy, product1_px, product1_py, product1_pz);
+    std::unique_ptr<FourMomentum> product2_fm = std::make_unique<FourMomentum>(product2_energy, product2_px, product2_py, product2_pz);
+
+    // Give decay particles their four-momenta
+    decay_products[0]->set_four_momentum(std::move(product1_fm));
+    decay_products[1]->set_four_momentum(std::move(product2_fm));
+
+    // Validate these auto products
+    if (validate_decay_products(decay_products, decay_type))
+    {
+      this->decay_products = std::move(decay_products);
+    }
+    else
+    {
+      std::cerr << "Error: Auto-set decay products failed.\n";
+      std::cout << "Father fm:" << *four_momentum << std::endl;
+      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
+      return;
+    }
+  }
+  else if (decay_products.size() == 3)
+  {
+    // Get the energy and momentum of the decaying particle in the lab frame
+    double decaying_particle_energy = four_momentum->get_energy();
+    double decaying_particle_px = four_momentum->get_Px();
+    double decaying_particle_py = four_momentum->get_Py();
+    double decaying_particle_pz = four_momentum->get_Pz();
+
+    // Split the energy and momentum equally between the two decay products
+    double product1_energy = decaying_particle_energy / 2;
+    double product1_px = decaying_particle_px / 3;
+    double product1_py = decaying_particle_py / 3;
+    double product1_pz = decaying_particle_pz / 3;
+
+    double product2_energy = decaying_particle_energy / 3;
+    double product2_px = decaying_particle_px / 3;
+    double product2_py = decaying_particle_py / 3;
+    double product2_pz = decaying_particle_pz / 3;
+
+    double product3_energy = decaying_particle_energy / 3;
+    double product3_px = decaying_particle_px / 3;
+    double product3_py = decaying_particle_py / 3;
+    double product3_pz = decaying_particle_pz / 3;
+
+    // Create the four-momenta for the decay products in the lab frame
+    std::unique_ptr<FourMomentum> product1_fm = std::make_unique<FourMomentum>(product1_energy, product1_px, product1_py, product1_pz);
+    std::unique_ptr<FourMomentum> product2_fm = std::make_unique<FourMomentum>(product2_energy, product2_px, product2_py, product2_pz);
+    std::unique_ptr<FourMomentum> product3_fm = std::make_unique<FourMomentum>(product3_energy, product3_px, product3_py, product3_pz);
+
+    // Give decay particles their four-momenta
+    decay_products[0]->set_four_momentum(std::move(product1_fm));
+    decay_products[1]->set_four_momentum(std::move(product2_fm));
+    decay_products[2]->set_four_momentum(std::move(product3_fm));
+
+    // Validate these auto products
+    if (validate_decay_products(decay_products, decay_type))
+    {
+      this->decay_products = std::move(decay_products);
+    }
+    else
+    {
+      std::cerr << "Error: Auto-set decay products failed, four momentum not conserved.\n";
+      std::cout << "Father fm:" << *four_momentum << std::endl;
+      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
+      return;
+    }
+  }
+}
+
+void Particle::set_is_virtual(bool is_virtual)
+{
+  this->is_virtual = is_virtual;
+}
 // Getters
 std::string Particle::get_label() const
 {
@@ -241,6 +423,11 @@ const std::vector<std::unique_ptr<Particle>> &Particle::get_decay_products() con
   return decay_products;
 }
 
+bool Particle::get_is_virtual()
+{
+  return is_virtual;
+}
+
 // Friend functions
 FourMomentum sum_four_momentum(const Particle &a, const Particle &b)
 {
@@ -276,12 +463,35 @@ void Particle::lorentz_boost(std::vector<long double> v_xyz)
 // Virtual print function
 void Particle::print() const
 {
-  std::cout << "\033[1mType:\033[0m " << type << ", \033[1mLabel:\033[0m " << label << ", \033[1mCharge (e):\033[0m " << charge << ", \033[1mSpin:\033[0m " << spin << ", \033[1mRest Mass (MeV): \033[0m" << rest_mass <<", \033[1mFour Momentum (MeV): \033[0m[" << *four_momentum << "]" << std::endl;
+  const int column_width = 29; // Set the width for each column
+
+  // Print table header
+  std::cout << std::left;
+  std::cout << std::setw(column_width) << "Attribute"
+            << "Value" << std::endl;
+
+  // Print separator line
+  std::cout << std::setfill('-') << std::setw(2 * column_width) << "-" << std::endl;
+  std::cout << std::setfill(' ');
+  std::cout << "\033[1m\033[4mParticle Properties:\033[0m\n";
+
+  // Print each attribute and value in a row
+  std::cout << std::setw(column_width) << "\033[1mType:\033[0m" << (is_virtual ? "virtual " + type : type) << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mLabel:\033[0m" << label << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mCharge (e):\033[0m" << charge << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mSpin:\033[0m" << spin << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mRest Mass (MeV):\033[0m" << rest_mass << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mFour Momentum (MeV):\033[0m"
+            << "[" << *four_momentum << "]" << std::endl;
 }
 
 // Implement the validity check method
 bool Particle::is_invariant_mass_valid(double invariant_mass) const
 {
+  if (is_virtual)
+  {
+    return true; // Skip the invariant mass check for virtual particles
+  }
   if (std::abs(invariant_mass - rest_mass) > 1e-5)
   { // 1e-5 tolerance
     return false;

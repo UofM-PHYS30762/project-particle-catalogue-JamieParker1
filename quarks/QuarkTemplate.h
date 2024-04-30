@@ -7,20 +7,20 @@
 // #include "QuarkName.h"
 // #include <cstdint>
 
-// template<typename Derived, typename Name, std::intmax_t ChargeNum, std::intmax_t ChargeDen, std::intmax_t MassNum, std::intmax_t MassDen>
+// template<typename Derived, typename Name, std::intmax_t charge_integer, std::intmax_t charge_denominator, std::intmax_t mass_integer, std::intmax_t mass_denominator>
 // class QuarkTemplate : public Quark
 // {
 // public:
 //   // Constructors
 //   QuarkTemplate(bool anti, Colour colour_charge, std::unique_ptr<FourMomentum> four_momentum)
-//       : Quark(Name::name, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
+//       : Quark(Name::name, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
 
 //   QuarkTemplate(const std::string &label, bool anti, Colour colour_charge, std::unique_ptr<FourMomentum> four_momentum)
-//       : Quark(Name::name, label, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
+//       : Quark(Name::name, label, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
 
 //   // Default constructor
 //   QuarkTemplate(bool anti = false, Colour colour_charge = Colour::Red)
-//       : Quark(Name::name, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), (anti) ? -1.0/3.0 : 1.0/3.0, (anti) ? get_anti_colour(colour_charge) : colour_charge) {}
+//       : Quark(Name::name, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), (anti) ? -1.0/3.0 : 1.0/3.0, (anti) ? get_anti_colour(colour_charge) : colour_charge) {}
 
 //   // Special member functions
 //   QuarkTemplate(const Derived &other) : Quark(other) {}
@@ -51,7 +51,7 @@
 #include "QuarkName.h"
 #include <cstdint>
 
-template<typename Derived, typename Name, std::intmax_t ChargeNum, std::intmax_t ChargeDen, std::intmax_t MassNum, std::intmax_t MassDen>
+template<typename Derived, typename Name, std::intmax_t charge_integer, std::intmax_t charge_denominator, std::intmax_t mass_integer, std::intmax_t mass_denominator>
 class QuarkTemplate : public Quark
 {
 public:
@@ -60,16 +60,16 @@ public:
 
   // Constructors
   QuarkTemplate(bool anti, Colour colour_charge, std::unique_ptr<FourMomentum> four_momentum)
-      : Quark(Name::name, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
+      : Quark(Name::name, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
 
   QuarkTemplate(const std::string &label, bool anti, Colour colour_charge, std::unique_ptr<FourMomentum> four_momentum)
-      : Quark(Name::name, label, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
+      : Quark(Name::name, label, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), std::move(four_momentum), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
 
   QuarkTemplate(bool anti = false)
-      : Quark(Name::name, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), (anti) ? -1.0/3.0 : 1.0/3.0, (anti) ? Colour::AntiRed : Colour::Red) {}
+      : Quark(Name::name, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), (anti) ? -1.0/3.0 : 1.0/3.0, (anti) ? Colour::AntiRed : Colour::Red) {}
 
   QuarkTemplate(Colour colour_charge, bool anti = false)
-      : Quark(Name::name, (anti) ? -static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen) : static_cast<double>(ChargeNum) / static_cast<double>(ChargeDen), static_cast<double>(MassNum) / static_cast<double>(MassDen), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
+      : Quark(Name::name, (anti) ? -static_cast<double>(charge_integer) / static_cast<double>(charge_denominator) : static_cast<double>(charge_integer) / static_cast<double>(charge_denominator), static_cast<double>(mass_integer) / static_cast<double>(mass_denominator), (anti) ? -1.0/3.0 : 1.0/3.0, colour_charge) {}
   // Special member functions
   QuarkTemplate(const Derived &other) : Quark(other) {}
   QuarkTemplate(Derived &&other) noexcept : Quark(std::move(other)) {}

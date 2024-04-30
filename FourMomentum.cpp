@@ -10,11 +10,11 @@ FourMomentum::FourMomentum(long double energy_or_rest_mass, long double px, long
   {
     long double spatial_momentum_magnitude_squared = px * px + py * py + pz * pz;
     long double energy_squared = spatial_momentum_magnitude_squared + pow(energy_or_rest_mass, 2);
-    energy = std::sqrt(energy_squared);
+    this->energy = std::sqrt(energy_squared);
   }
   else
   {
-    energy = energy_or_rest_mass; // Treat as energy directly
+    this->energy = energy_or_rest_mass; // Treat as energy directly
   }
 }
 

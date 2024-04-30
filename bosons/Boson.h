@@ -39,9 +39,6 @@ public:
   // Move assignment operator
   Boson &operator=(Boson &&other) noexcept;
 
-  // Virtual print function
-  virtual void print() const override;
-
   // Lepton number getter
 };
 

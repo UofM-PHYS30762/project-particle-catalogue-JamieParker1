@@ -3,9 +3,10 @@
 #include "../FourMomentum.h" 
 #include <iostream>  // For std::cout
 #include <stdexcept> // For std::invalid_argument
+#include <iomanip>
 
 // Default constructor
-Lepton::Lepton(int lepton_number) : Particle((lepton_number == 1) ? "lepton" : "antilepton", (lepton_number == 1) ? -1 : 1, 0.5, 0, std::vector<DecayType>{DecayType::None}), lepton_number(lepton_number) {}
+Lepton::Lepton(int lepton_number) : Particle((lepton_number == 1) ? "lepton" : "antilepton", (lepton_number == 1) ? "General lepton" : "General antilepton", (lepton_number == 1) ? -1 : 1, 0.5, 1, std::vector<DecayType>{DecayType::None}), lepton_number(lepton_number) {}
  
 // Protected constructor without label with four momentum
 Lepton::Lepton(std::string type, int charge, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, int lepton_number, std::vector<DecayType> possible_decay_types)
@@ -59,6 +60,12 @@ Lepton &Lepton::operator=(Lepton &&other) noexcept
 // Virtual print function
 void Lepton::print() const
 {
-  Particle::print();
-  std::cout << "\033[1mLepton number:\033[0m " << lepton_number << std::endl;
+  const int columnWidth = 29;  // Set the width for each column
+  std::cout << std::left;  // Align output to the left
+  Particle::print();  // Print general particle properties
+
+  std::cout << "\033[1m\033[4mLepton-Specific Properties:\033[0m\n";
+  // Print Particle and Quark attributes side by side
+  std::cout << std::setw(columnWidth) << "\033[1mLepton number:\033[0m " << lepton_number << std::endl;
+
 }
