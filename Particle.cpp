@@ -123,6 +123,7 @@ void Particle::set_four_momentum(std::unique_ptr<FourMomentum> four_momentum)
   else if (is_invariant_mass_valid(four_momentum->invariant_mass()))
   {
     this->four_momentum = std::move(four_momentum);
+    auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
   }
   else
   {

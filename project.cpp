@@ -87,6 +87,8 @@ int main()
 
 
   Tau tau;
+  tau.set_four_momentum(std::make_unique<FourMomentum>(Mass::tau, 10, 4, 2, true));
+
   std::unique_ptr<Electron> electron_decay = std::make_unique<Electron>();
   std::unique_ptr<Neutrino> electron_neutrino = std::make_unique<Neutrino>("electron", -1);
   std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>();
@@ -97,7 +99,10 @@ int main()
   tau.auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
   tau.print();
 
-  std::cout << "HERE";
+  tau.set_four_momentum(std::make_unique<FourMomentum>(Mass::tau, 100, 4, 2, true));
+  tau.print();
+
+  
 
   // double m1 = 1.0;  // Rest mass of the first decay particle
   // double m2 = 4.0;  // Rest mass of the second decay particle
