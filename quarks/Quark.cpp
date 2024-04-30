@@ -95,18 +95,6 @@ bool Quark::is_valid_colour_charge(Colour colour_charge)
 
 // Setters
 
-// void Quark::set_baryon_number(double baryon_number)
-// {
-//   if (baryon_number != -(1.0/3.0) && baryon_number != (1.0/3.0))
-//   {
-//     throw std::invalid_argument("Error: Baryon number must be either -1/3 or +1/3.");
-//   }
-//   else
-//   {
-//     this->baryon_number = baryon_number;
-//   }
-// }
-
 void Quark::set_colour_charge(Colour colour_charge)
 {
   if(is_valid_colour_charge(colour_charge))

@@ -116,15 +116,16 @@ int main()
   // tau.auto_set_decay_products(std::move(dp), DecayType::Leptonic);
   // tau.print();
   std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>("tau");
-  std::unique_ptr<Up> anti_up = std::make_unique<Up>(true);
+  std::unique_ptr<Up> anti_up = std::make_unique<Up>(Colour::AntiBlue, true);
   std::unique_ptr<Down> down = std::make_unique<Down>();
+  anti_up->print();
   down->print();
-  std::cout << anti_up->get_charge() << down->get_charge();
   dp.push_back(std::move(tau_neutrino));
   dp.push_back(std::move(anti_up));
   dp.push_back(std::move(down));
   
   tau.auto_set_decay_products(std::move(dp), DecayType::Weak);
+  tau.print();
 
 
 

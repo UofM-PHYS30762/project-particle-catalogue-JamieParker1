@@ -548,11 +548,12 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
   int top_count = 0;
   int bottom_count = 0;
 
+  std::vector<Colour> colour_charges;
+
   for (const auto &product : decay_products)
   {
     product_total_momentum = product_total_momentum + product->get_four_momentum();
     product_total_charge = product_total_charge + product->get_charge();
-    std::cout << product_total_charge << std::endl;
     product_total_lepton_number = product_total_lepton_number + product->get_lepton_number();
     product_total_baryon_number = product_total_baryon_number + product->get_baryon_number();
 
@@ -657,6 +658,10 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
         bottom_count--;
       }
     }
+    if (dynamic_cast<const Quark *>(product.get()))
+    {
+      colour_charges.push_back(dynamic_cast<const Quark *>(product.get())->get_colour_charge());
+    }
   }
   FourMomentum diff = product_total_momentum - *four_momentum;
   // Check if the difference in each component is within an acceptable range
@@ -667,6 +672,7 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
   bool charge_conserved = (std::abs(charge - product_total_charge) < 0.01);
   bool lepton_number_conserved = (this->get_lepton_number() == product_total_lepton_number);
   bool baryon_number_conserved = (this->get_baryon_number() == product_total_baryon_number);
+  bool colour_charge_conserved = is_colour_neutral(colour_charges);
 
   // Check lepton flavor conservation
   bool lepton_flavor_conserved = true;
@@ -711,10 +717,10 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
   }
   if (decay_type == DecayType::Weak)
   {
-    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved);
+    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && colour_charge_conserved);
   }
   else 
   {
-    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && quark_flavor_conserved);
+    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && quark_flavor_conserved && colour_charge_conserved);
   }
 }

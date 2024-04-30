@@ -85,6 +85,111 @@ Colour get_anti_colour(Colour colour)
     throw std::invalid_argument("Error: Unrecognised Colour");
   }
 }
+bool is_colour_neutral(Colour colour1, Colour colour2, Colour colour3)
+{
+  int red_count = 0;
+  int blue_count = 0;
+  int green_count = 0;
+
+  if (!(colour3==Colour::None))
+  {
+    for (Colour &colour : std::vector<Colour>{colour1, colour2, colour3})
+    {
+      switch (colour)
+      {
+      case Colour::Red:
+        red_count++;
+        break;
+      case Colour::Green:
+        green_count++;
+        break;
+      case Colour::Blue:
+        blue_count++;
+        break;
+      case Colour::AntiRed:
+        red_count--;
+        break;
+      case Colour::AntiGreen:
+        green_count--;
+        break;
+      case Colour::AntiBlue:
+        blue_count--;
+        break;
+      case Colour::None:
+        break;
+      default:
+        throw std::invalid_argument("Error: Unrecognised Colour");
+      }
+    }
+    if ((red_count+green_count+blue_count) == 1 || (red_count+green_count+blue_count) == -1)
+    {
+      return true;
+    }
+    else return false;
+  }
+  else
+  {
+    if (colour1 == get_anti_colour(colour2))
+    {
+      return true;
+    }
+    else return false;
+  }
+}
+bool is_colour_neutral(std::vector<Colour> colour_charges)
+{
+  int red_count = 0;
+  int blue_count = 0;
+  int green_count = 0;
+
+  if (!(colour_charges.size() == 2))
+  {
+    for (Colour &colour : colour_charges)
+    {
+      switch (colour)
+      {
+      case Colour::Red:
+        red_count++;
+        break;
+      case Colour::Green:
+        green_count++;
+        break;
+      case Colour::Blue:
+        blue_count++;
+        break;
+      case Colour::AntiRed:
+        red_count--;
+        break;
+      case Colour::AntiGreen:
+        green_count--;
+        break;
+      case Colour::AntiBlue:
+        blue_count--;
+        break;
+      case Colour::None:
+        break;
+      default:
+        throw std::invalid_argument("Error: Unrecognised Colour");
+      }
+    }
+    if ((red_count+green_count+blue_count) == 1 || (red_count+green_count+blue_count) == -1)
+    {
+      return true;
+    }
+    else return false;
+  }
+  else
+  {
+    if (colour_charges[0] == get_anti_colour(colour_charges[1]))
+    {
+      return true;
+    }
+    else return false;
+  }
+}
+
+
+
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find)
 {
   // Iterate over the vector to check if the given type is present
