@@ -30,6 +30,8 @@
 #include <string>
 #include <thread> // For std::this_thread::sleep_for
 #include <chrono> // For std::chrono::seconds
+#include <iostream>
+#include <string>
 
 std::string to_string(Colour colour);
 std::string to_string(DecayType decay_type);
@@ -45,6 +47,8 @@ std::vector<double> find_momentum_of_products_three_body(double product1_rest_ma
 void clear_screen();
 void clear_input_buffer();
 void print_loading_string(const std::string &input_string, int seconds, bool new_new_line = false, bool elipses = true);
+void wait_for_enter(const std::string &prompt = "");
+
 
 void fill_leptons(ParticleCatalogue<Particle> &catalogue);
 void fill_anti_leptons(ParticleCatalogue<Particle> &catalogue);
@@ -55,4 +59,14 @@ void fill_particles(ParticleCatalogue<Particle> &catalogue);
 void fill_anti_particles(ParticleCatalogue<Particle> &catalogue);
 void fill_catalogue(ParticleCatalogue<Particle> &catalogue);
 
-#endif // HELPER_FUNCTIONS_H
+void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue);
+void sort_by_charge(ParticleCatalogue<Particle> &catalogue);
+void sort_by_spin(ParticleCatalogue<Particle> &catalogue);
+void sort_by_energy(ParticleCatalogue<Particle> &catalogue);
+void sort_by_momentum(ParticleCatalogue<Particle> &catalogue);
+void sort_by_velocity(ParticleCatalogue<Particle> &catalogue);
+
+
+
+
+#endif // HELPER_FUNCTIONS_

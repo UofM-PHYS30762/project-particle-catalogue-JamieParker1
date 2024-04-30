@@ -4,14 +4,14 @@
 
 // Constructor without label
 W::W(int charge, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("w", validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+    : Boson("w", validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
 
 // Constructor with label
 W::W(const std::string &label, int charge, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("w", label, validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+    : Boson("w", label, validate_charge(charge), 80400, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
 
 // Default constructor
-W::W(int charge) : Boson("w", validate_charge(charge), 80400, 1, std::vector<DecayType>{DecayType::Hadronic, DecayType::Leptonic}) {}
+W::W(int charge) : Boson("w", validate_charge(charge), 80400, 1, std::vector<DecayType>{DecayType::Weak}) {}
 
 // Copy constructor
 W::W(const W &other)

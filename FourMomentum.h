@@ -31,6 +31,7 @@ public:
   long double get_Px() const;
   long double get_Py() const;
   long double get_Pz() const;
+  long double get_P_magnitude() const;
   long double get_velocity_magnitude() const; // In units of C
   long double get_velocity_x() const;
   long double get_velocity_y() const;

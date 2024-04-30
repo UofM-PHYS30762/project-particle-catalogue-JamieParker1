@@ -30,10 +30,9 @@ namespace Mass
 
 enum class DecayType
 {
-  Hadronic,
-  Leptonic,
+  Weak,
+  Strong,
   Electromagnetic,
-  Bosonic,
   None
 };
 
@@ -59,6 +58,7 @@ private:
   bool is_virtual = false;   // If particle is virtual - don't have to make checks on invariant mass and rest mass
 
   std::vector<DecayType> possible_decay_types;
+  DecayType current_decay_type;
   std::vector<std::unique_ptr<Particle>> decay_products;
   bool validate_decay_products(const std::vector<std::unique_ptr<Particle>> &decay_products, DecayType decay_type) const;
   void auto_set_decay_products_virtual(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
@@ -108,7 +108,7 @@ public:
 
   // Getters
   std::string get_label() const;
-  int get_charge() const;
+  double get_charge() const;
   double get_spin() const;
   double get_rest_mass() const;
   std::string get_type() const;

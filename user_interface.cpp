@@ -52,10 +52,11 @@ void display_program_showcase_menu()
   std::cout << "  ==== Program Showcase ====\n";
   std::cout << "  1. Full Showcase\n";
   std::cout << "  2. Basic Class Hierachy\n";
-  std::cout << "  3. Particle Attributes and Functionality\n";
-  std::cout << "  4. Four Momentum\n";
-  std::cout << "  5. Particle Catalogue\n";
-  std::cout << "  6. Back\n -";
+  std::cout << "  3. Particle Attributes\n";
+  std::cout << "  4. Decay Product functionality\n";
+  std::cout << "  5. Four Momentum\n";
+  std::cout << "  6. Particle Catalogue\n";
+  std::cout << "  7. Back\n -";
 }
 
 // Function to display the custom usage menu
@@ -133,10 +134,11 @@ void program_showcase_menu_navigation(ParticleCatalogue<Particle> &showcase_cata
     {
     case 1: // Full showcase
     case 2: // Particle class hierarchy
-    case 3: // Particle attributes and functionality
-    case 4: // Four momentum
-    case 5: // Particle catalogue
-    case 6: // Back
+    case 3: // Particle attributes
+    case 4: // Decay products functionality
+    case 5: // Four momentum
+    case 6: // Particle catalogue
+    case 7: // Back
       return;
     default:
       std::cout << "Invalid choice. Please try again.\n";

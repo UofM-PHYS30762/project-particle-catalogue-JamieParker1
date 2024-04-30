@@ -44,34 +44,33 @@ struct QuarkName<4>
 
 // Create classes using the QuarkTemplate, specialising the rest mass and charge
 // Utilise
-class Bottom : public QuarkTemplate<Bottom, QuarkName<7>, 1, 3, 4180, 1>
-{
-  using QuarkTemplate<Bottom, QuarkName<7>, 1, 3, 4180, 1>::QuarkTemplate;
-};
 
-class Charm : public QuarkTemplate<Charm, QuarkName<6>, 2, 3, 1275, 1>
-{
-  using QuarkTemplate<Charm, QuarkName<6>, 2, 3, 1275, 1>::QuarkTemplate;
-};
-
-class Down : public QuarkTemplate<Down, QuarkName<5>, 1, 3, 48, 10>
-{
-  using QuarkTemplate<Down, QuarkName<5>, 1, 3, 48, 10>::QuarkTemplate;
-};
 
 class Up : public QuarkTemplate<Up, QuarkName<3>, 2, 3, 23, 10>
 {
   using QuarkTemplate<Up, QuarkName<3>, 2, 3, 23, 10>::QuarkTemplate;
 };
-
-class Strange : public QuarkTemplate<Strange, QuarkName<8>, 1, 3, 95, 1>
+class Charm : public QuarkTemplate<Charm, QuarkName<6>, 2, 3, 1275, 1>
 {
-  using QuarkTemplate<Strange, QuarkName<8>, 1, 3, 95, 1>::QuarkTemplate;
+  using QuarkTemplate<Charm, QuarkName<6>, 2, 3, 1275, 1>::QuarkTemplate;
 };
-
 class Top : public QuarkTemplate<Top, QuarkName<4>, 2, 3, 173070, 1>
 {
   using QuarkTemplate<Top, QuarkName<4>, 2, 3, 173070, 1>::QuarkTemplate;
+};
+
+
+class Down : public QuarkTemplate<Down, QuarkName<5>, -1, 3, 48, 10>
+{
+  using QuarkTemplate<Down, QuarkName<5>, -1, 3, 48, 10>::QuarkTemplate;
+};
+class Strange : public QuarkTemplate<Strange, QuarkName<8>, -1, 3, 95, 1>
+{
+  using QuarkTemplate<Strange, QuarkName<8>, -1, 3, 95, 1>::QuarkTemplate;
+};
+class Bottom : public QuarkTemplate<Bottom, QuarkName<7>, -1, 3, 4180, 1>
+{
+  using QuarkTemplate<Bottom, QuarkName<7>, -1, 3, 4180, 1>::QuarkTemplate;
 };
 
 #endif // INDIVIDUAL_QUARKS_H

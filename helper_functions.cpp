@@ -1,5 +1,6 @@
 #include "helper_functions.h"
 
+// Functions to convert to string
 std::string to_string(Colour colour)
 {
   switch (colour)
@@ -22,19 +23,16 @@ std::string to_string(Colour colour)
     return "Unknown Colour";
   }
 }
-
 std::string to_string(DecayType decay_type)
 {
   switch (decay_type)
   {
-  case DecayType::Leptonic:
-    return "Leptonic";
-  case DecayType::Hadronic:
-    return "Hadronic";
   case DecayType::Electromagnetic:
     return "Electromagnetic";
-  case DecayType::Bosonic:
-    return "Bosonic";
+  case DecayType::Weak:
+    return "Weak";
+  case DecayType::Strong:
+    return "Strong";
   case DecayType::None:
     return "None";
   default:
@@ -42,6 +40,7 @@ std::string to_string(DecayType decay_type)
   }
 }
 
+// Functions to assist enum classes
 bool is_anti_colour(Colour colour)
 {
   switch (colour)
@@ -64,7 +63,6 @@ bool is_anti_colour(Colour colour)
     throw std::invalid_argument("Error: Unrecognised Colour");
   }
 }
-
 Colour get_anti_colour(Colour colour)
 {
   switch (colour)
@@ -87,7 +85,6 @@ Colour get_anti_colour(Colour colour)
     throw std::invalid_argument("Error: Unrecognised Colour");
   }
 }
-
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find)
 {
   // Iterate over the vector to check if the given type is present
@@ -108,7 +105,6 @@ double energy_sum(double momentum, double product1_rest_mass, double product2_re
   double E2 = sqrt(product2_rest_mass * product2_rest_mass + momentum * momentum);
   return E1 + E2;
 }
-
 // Function to perform the bisection method to find the momentum of two decay particles
 double find_momentum_of_products(double product1_rest_mass, double product2_rest_mass, double decay_particle_rest_mass, double tolerance)
 {
@@ -128,7 +124,6 @@ double find_momentum_of_products(double product1_rest_mass, double product2_rest
   }
   return (low + high) / 2;
 }
-
 // Function to calculate the sum of energies of products 1, 2, and 3 given a momentum
 double energy_sum_three_body(double p1x, double p2x, double p2y, double m1, double m2, double m3)
 {
@@ -139,8 +134,7 @@ double energy_sum_three_body(double p1x, double p2x, double p2y, double m1, doub
   double E3 = std::sqrt(m3 * m3 + p3x * p3x + p3y * p3y);
   return E1 + E2 + E3;
 }
-
-
+// Function to calculate the momentum of products in a three body decay, utilising the bisection method for two body decay
 std::vector<double> find_momentum_of_products_three_body(double product1_rest_mass, double product2_rest_mass, double product3_rest_mass, double decay_particle_rest_mass, double tolerance)
 {
   double p1x = 0.0;
@@ -191,14 +185,12 @@ void clear_screen()
   std::cout << "\033[2J\033[1;1H";
 #endif
 }
-
 // Function to clear input buffer
 void clear_input_buffer()
 {
   std::cin.clear();                                                   // Clear any error flags
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard any remaining characters in the input buffer
 }
-
 // Prints a string followed by dots
 void print_loading_string(const std::string &input_string, int seconds, bool new_new_line, bool elipses)
 {
@@ -217,7 +209,36 @@ void print_loading_string(const std::string &input_string, int seconds, bool new
     std::cout << std::endl;
   }
 }
+// Function to pause program execution until user hits enter
+void wait_for_enter(const std::string &prompt)
+{
+  if (prompt.empty())
+  {
+    std::cout << "Press Enter to continue:";
+  }
+  else
+  {
+    std::cout << prompt;
+  }
 
+  while (true)
+  {
+    std::string input;
+    std::getline(std::cin, input); // Read a line of input
+
+    // Check if the user pressed Enter
+    if (input.empty())
+    {
+      break; // Exit the loop if Enter is pressed
+    }
+    else
+    {
+      break;
+    }
+  }
+}
+
+// Fill catalogue with leptons
 void fill_leptons(ParticleCatalogue<Particle> &catalogue)
 {
   Tau *tau = new Tau();
@@ -234,7 +255,7 @@ void fill_leptons(ParticleCatalogue<Particle> &catalogue)
   catalogue.add_particle(electron_neutrino);
   catalogue.add_particle(muon_neutrino);
 }
-
+// Fill catalogue with antileptons
 void fill_anti_leptons(ParticleCatalogue<Particle> &catalogue)
 {
   Tau *anti_tau = new Tau(-1);
@@ -251,7 +272,7 @@ void fill_anti_leptons(ParticleCatalogue<Particle> &catalogue)
   catalogue.add_particle(anti_electron_neutrino);
   catalogue.add_particle(anti_muon_neutrino);
 }
-
+// Fill catalogue with bosons
 void fill_bosons(ParticleCatalogue<Particle> &catalogue)
 {
   Photon *photon = new Photon();
@@ -268,7 +289,7 @@ void fill_bosons(ParticleCatalogue<Particle> &catalogue)
   catalogue.add_particle(w_minus);
   catalogue.add_particle(higgs);
 }
-
+// Fill catalogue with quarks
 void fill_quarks(ParticleCatalogue<Particle> &catalogue)
 {
   Up *up = new Up();
@@ -285,7 +306,7 @@ void fill_quarks(ParticleCatalogue<Particle> &catalogue)
   catalogue.add_particle(charm);
   catalogue.add_particle(strange);
 }
-
+// Fill catalogue with antiquarks
 void fill_anti_quarks(ParticleCatalogue<Particle> &catalogue)
 {
   Up *anti_up = new Up(true);
@@ -302,23 +323,91 @@ void fill_anti_quarks(ParticleCatalogue<Particle> &catalogue)
   catalogue.add_particle(anti_charm);
   catalogue.add_particle(anti_strange);
 }
-
+// Fill catalogue with particles
 void fill_particles(ParticleCatalogue<Particle> &catalogue)
 {
   fill_leptons(catalogue);
   fill_bosons(catalogue);
   fill_quarks(catalogue);
 }
-
+// Fill catalogue with antiparticles
 void fill_anti_particles(ParticleCatalogue<Particle> &catalogue)
 {
   fill_anti_leptons(catalogue);
   fill_bosons(catalogue);
   fill_anti_quarks(catalogue);
 }
-
+// Fill catalogue with all particles
 void fill_catalogue(ParticleCatalogue<Particle> &catalogue)
 {
   fill_particles(catalogue);
-  fill_anti_particles(catalogue);
+  fill_anti_leptons(catalogue);
+  fill_anti_quarks(catalogue);
 }
+
+// Sort catalogue by values
+void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_rest_mass() && p2->get_rest_mass()) {
+        return p1->get_rest_mass() < p2->get_rest_mass();
+    }
+    return false; });
+}
+void sort_by_charge(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_charge() && p2->get_charge()) {
+        return p1->get_charge() < p2->get_charge();
+    }
+    return false; });
+}
+void sort_by_spin(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_spin() && p2->get_spin()) {
+        return p1->get_spin() < p2->get_spin();
+    }
+    return false; });
+}
+void sort_by_energy(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_four_momentum().get_energy() && p2->get_four_momentum().get_energy()) {
+        return p1->get_four_momentum().get_energy() < p2->get_four_momentum().get_energy();
+    }
+    return false; });
+}
+void sort_by_momentum(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_four_momentum().get_P_magnitude() && p2->get_four_momentum().get_P_magnitude()) {
+        return p1->get_four_momentum().get_P_magnitude() < p2->get_four_momentum().get_P_magnitude();
+    }
+    return false; });
+}
+void sort_by_velocity(ParticleCatalogue<Particle> &catalogue)
+{
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       {
+    if (p1->get_four_momentum().get_velocity_magnitude() && p2->get_four_momentum().get_velocity_magnitude()) {
+        return p1->get_four_momentum().get_velocity_magnitude() < p2->get_four_momentum().get_velocity_magnitude();
+    }
+    return false; });
+}
+
+
+
+
+
+
+
+
+
+
+

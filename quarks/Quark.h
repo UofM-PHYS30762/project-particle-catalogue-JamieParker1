@@ -47,7 +47,7 @@ public:
   Quark &operator=(Quark &&other) noexcept;
 
   // Setters
-  void set_baryon_number(double baryon_number);
+  //void set_baryon_number(double baryon_number);
   void set_colour_charge(Colour colour_charge);
 
   // Getters

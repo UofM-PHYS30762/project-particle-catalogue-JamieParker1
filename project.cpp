@@ -70,85 +70,76 @@ void auto_decay_product_example()
 
   std::unique_ptr<FourMomentum> z_fm = std::make_unique<FourMomentum>(91200, 10, 10, 10, true);
   z.set_four_momentum(std::move(z_fm));
-  z.auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
+  z.auto_set_decay_products(std::move(decay_products), DecayType::Weak);
   z.print();
 }
 
 int main()
 {
-  // ParticleCatalogue<Particle> showcase_catalogue;
-  // ParticleCatalogue<Particle> user_catalogue;
-  // main_menu_navigation(showcase_catalogue, user_catalogue);
+  // ParticleCatalogue<Particle> catalogue;
+  // Photon *p = new Photon();
+  // Higgs *h = new Higgs();
+  // Electron *e = new Electron();
+  // e->set_label("HERE");
+  // h->set_label("HERE");
+  // catalogue.add_particle(p);
+  // catalogue.add_particle(h);
+  // catalogue.add_particle(e);
 
-  // showcase_basic_class_hierarchy();
-  // showcase_four_momentum_class();
-  // showcase_particle_attributes_and_functionality();
-  //  Auto settinf decay products for Higgs, Z and W
+  // std::vector<Particle*> heres = catalogue.find_particles_by_label("HERE");
+  // heres[0]->print();
+  // size_t remove_index = 0;
+  // catalogue.remove_particle(remove_index);
+  // std::cout << "___________________________" << std::endl;
+  // catalogue.print_all();
+  // catalogue.remove_particle(e);
+  // std::cout << "___________________________" << std::endl;
+  // catalogue.print_all();
+  // std::cout << "___________________________" << std::endl;
+  // catalogue.remove_particle("HERE");
+  // catalogue.print_all();
 
+  // catalogue.apply_function_to_particles<void (Particle::*)(const std::string&), const char*>(&Particle::set_label, "random label", std::vector<std::string>{"HERE"});
+  // //catalogue.apply_function_to_particles(&Particle::set_label, "random label", std::vector<std::string>{"HERE"});
+
+  // catalogue.apply_function_to_particles<Lepton>(&Lepton::set_label, "1");
+  // catalogue.print_all();
 
   Tau tau;
-  tau.set_four_momentum(std::make_unique<FourMomentum>(Mass::tau, 10, 4, 2, true));
-
-  std::unique_ptr<Electron> electron_decay = std::make_unique<Electron>();
-  std::unique_ptr<Neutrino> electron_neutrino = std::make_unique<Neutrino>("electron", -1);
-  std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>();
-  std::vector<std::unique_ptr<Particle>> decay_products;
-  decay_products.push_back(std::move(electron_decay));
-  decay_products.push_back(std::move(electron_neutrino));
-  decay_products.push_back(std::move(tau_neutrino));
-  tau.auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
-  tau.print();
-
-  tau.set_four_momentum(std::make_unique<FourMomentum>(Mass::tau, 100, 4, 2, true));
-  tau.print();
-
+  std::vector<std::unique_ptr<Particle>> dp;
+  // std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>("tau");
+  // std::unique_ptr<Muon> electron = std::make_unique<Muon>();
+  // std::unique_ptr<Neutrino> anti_electron_neutrino = std::make_unique<Neutrino>("muon", -1);
+  // dp.push_back(std::move(tau_neutrino));
+  // dp.push_back(std::move(electron));
+  // dp.push_back(std::move(anti_electron_neutrino));
+  // tau.auto_set_decay_products(std::move(dp), DecayType::Leptonic);
+  // tau.print();
+  std::unique_ptr<Neutrino> tau_neutrino = std::make_unique<Neutrino>("tau");
+  std::unique_ptr<Up> anti_up = std::make_unique<Up>(true);
+  std::unique_ptr<Down> down = std::make_unique<Down>();
+  down->print();
+  std::cout << anti_up->get_charge() << down->get_charge();
+  dp.push_back(std::move(tau_neutrino));
+  dp.push_back(std::move(anti_up));
+  dp.push_back(std::move(down));
   
+  tau.auto_set_decay_products(std::move(dp), DecayType::Weak);
 
-  // double m1 = 1.0;  // Rest mass of the first decay particle
-  // double m2 = 4.0;  // Rest mass of the second decay particle
-  // double m3 = 3.0;  // Rest mass of the third decay particle
-  // double m_particle = 10.0;  // Rest mass of the decaying particle
 
-  // std::vector<double> momenta = find_momentum_of_products_three_body(m1, m2, m3, m_particle);
 
-  // // Access the momentum components
-  // double p1x = momenta[0];
-  // double p2x = momenta[1];
-  // double p2y = momenta[2];
-  // double p3x = momenta[3];
-  // double p3y = momenta[4];
 
-  // std::cout << "HERE" << std::endl;
-  // std::cout << "p1x: " << p1x << std::endl;
-  // std::cout << "p2x: " << p2x << std::endl;
-  // std::cout << "p2y: " << p2y << std::endl;
-  // std::cout << "p3x: " << p3x << std::endl;
-  // std::cout << "p3y: " << p3y << std::endl;
 
-  // std::cout << "p2x + p3x: " << p2x + p3x << std::endl;
-  // std::cout << "p2y + p3y: " << p2y + p3y << std::endl;
 
-  // double E1 = std::sqrt(m1 * m1 + p1x * p1x);
-  // double E2 = std::sqrt(m2 * m2 + p2x * p2x + p2y * p2y);
-  // double E3 = std::sqrt(m3 * m3 + p3x * p3x + p3y * p3y);
-
-  // FourMomentum decaying(10, 5, 5, 5, true);
-  // FourMomentum d1(E1, p1x, 0, 0);
-  // FourMomentum d2(E2, p2x, p2y);
-  // FourMomentum d3(E3, p3x, p3y, 0);
-  // d1.lorentz_boost(decaying.get_velocity_vector(false));
-  // d2.lorentz_boost(decaying.get_velocity_vector(false));
-  // d3.lorentz_boost(decaying.get_velocity_vector(false));
-
-  // std::cout << "1 " << d1 << std::endl;
-  // std::cout << "2 " << d2 << std::endl;
-  // std::cout << "3 " << d3 << std::endl;
-  // std::cout << "P " << decaying << std::endl;
-
-  // std::cout << "sum " << d1 + d2 + d3;
-
-  
-
+  // wait_for_enter("Hit Enter to continue to Class Hierachy Showcase:");
+  // showcase_basic_class_hierarchy();
+  // wait_for_enter();
+  // showcase_four_momentum_class();
+  // wait_for_enter();
+  // showcase_particle_attributes();
+  // wait_for_enter();
+  // showcase_decay_product_functionality();
+  // showcase_particle_catalogue();
 
   return 0;
 }

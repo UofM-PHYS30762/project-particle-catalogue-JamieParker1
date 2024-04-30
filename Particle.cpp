@@ -123,7 +123,10 @@ void Particle::set_four_momentum(std::unique_ptr<FourMomentum> four_momentum)
   else if (is_invariant_mass_valid(four_momentum->invariant_mass()))
   {
     this->four_momentum = std::move(four_momentum);
-    auto_set_decay_products(std::move(decay_products), DecayType::Leptonic);
+    if (!decay_products.empty())
+    {
+      auto_set_decay_products(std::move(decay_products), current_decay_type);
+    }
   }
   else
   {
@@ -139,6 +142,7 @@ void Particle::set_decay_products(std::vector<std::unique_ptr<Particle>> decay_p
   }
   else if (validate_decay_products(decay_products, decay_type))
   {
+    this->current_decay_type = decay_type;
     this->decay_products = std::move(decay_products);
   }
   else
@@ -147,14 +151,14 @@ void Particle::set_decay_products(std::vector<std::unique_ptr<Particle>> decay_p
   }
 }
 
-
-
-
-
-
-
 void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type)
 {
+  if (!contains_decay_type(possible_decay_types, decay_type))
+  {
+    std::cerr << "Error: Particle cannot decay via that path\n";
+    return;
+  }
+
   if (decay_products.size() == 2)
   {
     // Work in decaying particle's rest frame
@@ -178,7 +182,16 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     double product1_rest_mass = decay_products[0]->get_rest_mass();
     double product2_rest_mass = decay_products[1]->get_rest_mass();
 
-    double product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, rest_mass);
+    // Calculate magnitude of momentum for decay products
+    double product_px_magnitude;
+    if (is_virtual)
+    {
+      product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, four_momentum->invariant_mass());
+    }
+    else
+    {
+      product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, rest_mass);
+    }
     // double product_px_magnitude = find_momentum_of_products(product1_rest_mass, product2_rest_mass, four_momentum->get_energy());
     double product1_energy = std::sqrt(product1_rest_mass * product1_rest_mass + product_px_magnitude * product_px_magnitude);
     double product2_energy = std::sqrt(product2_rest_mass * product2_rest_mass + product_px_magnitude * product_px_magnitude);
@@ -201,6 +214,7 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     // Validate these auto products
     if (validate_decay_products(decay_products, decay_type))
     {
+      this->current_decay_type = decay_type;
       this->decay_products = std::move(decay_products);
     }
     else
@@ -234,28 +248,37 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     // E2^2 = P2X^2 + P2Y^2 + M2^2
     // E3^2 = P3X^2 + P3Y^2 + M3^2
     // E1 + E2 + E3 = M_particle
-    // E1 >= M1, E2 >= M2, E3 >= M3, 
+    // E1 >= M1, E2 >= M2, E3 >= M3,
     // P2X + P3X = -P1X
     // P2Y = - P3Y
     // sqrt(P1X^2 + M1^2) + sqrt(P2X^2 + P2Y^2 + M2^2) + sqrt(P3X^2 + P3Y^2 + M3^2) = M_particle
-    
+
     double product1_rest_mass = decay_products[0]->get_rest_mass();
     double product2_rest_mass = decay_products[1]->get_rest_mass();
     double product3_rest_mass = decay_products[2]->get_rest_mass();
 
+    // Calculate magnitude of momentum for decay products
+    std::vector<double> momenta;
+    if (is_virtual)
+    {
+      momenta = find_momentum_of_products_three_body(product1_rest_mass, product2_rest_mass, product3_rest_mass, four_momentum->invariant_mass());
+    }
+    else
+    {
+      momenta = find_momentum_of_products_three_body(product1_rest_mass, product2_rest_mass, product3_rest_mass, rest_mass);
+    }
     // Find momenta of decay particles in x-y plane: p1x, p2x, p2y, p3x, p3y
-    std::vector<double> momenta = find_momentum_of_products_three_body(product1_rest_mass, product2_rest_mass, product3_rest_mass, rest_mass);
     // Access the momentum components
     double p1x = momenta[0];
     double p2x = momenta[1];
     double p2y = momenta[2];
     double p3x = momenta[3];
     double p3y = momenta[4];
-    
+
     double product1_energy = std::sqrt(product1_rest_mass * product1_rest_mass + p1x * p1x);
     double product2_energy = std::sqrt(product2_rest_mass * product2_rest_mass + p2x * p2x + p2y * p2y);
     double product3_energy = std::sqrt(product3_rest_mass * product3_rest_mass + p3x * p3x + p3y * p3y);
-    
+
     std::unique_ptr<FourMomentum> product1_fm = std::make_unique<FourMomentum>(product1_energy, p1x, 0, 0);
     std::unique_ptr<FourMomentum> product2_fm = std::make_unique<FourMomentum>(product2_energy, p2x, p2y, 0);
     std::unique_ptr<FourMomentum> product3_fm = std::make_unique<FourMomentum>(product3_energy, p3x, p3y, 0);
@@ -268,10 +291,11 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     decay_products[0]->set_four_momentum(std::move(product1_fm));
     decay_products[1]->set_four_momentum(std::move(product2_fm));
     decay_products[2]->set_four_momentum(std::move(product3_fm));
-    
+
     // Validate these auto products
     if (validate_decay_products(decay_products, decay_type))
     {
+      this->current_decay_type = decay_type;
       this->decay_products = std::move(decay_products);
     }
     else
@@ -318,6 +342,7 @@ void Particle::auto_set_decay_products_virtual(std::vector<std::unique_ptr<Parti
     // Validate these auto products
     if (validate_decay_products(decay_products, decay_type))
     {
+      this->current_decay_type = decay_type;
       this->decay_products = std::move(decay_products);
     }
     else
@@ -365,6 +390,7 @@ void Particle::auto_set_decay_products_virtual(std::vector<std::unique_ptr<Parti
     // Validate these auto products
     if (validate_decay_products(decay_products, decay_type))
     {
+      this->current_decay_type = decay_type;
       this->decay_products = std::move(decay_products);
     }
     else
@@ -381,13 +407,14 @@ void Particle::set_is_virtual(bool is_virtual)
 {
   this->is_virtual = is_virtual;
 }
+
 // Getters
 std::string Particle::get_label() const
 {
   return label;
 }
 
-int Particle::get_charge() const
+double Particle::get_charge() const
 {
   return charge;
 }
@@ -506,15 +533,130 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
   // Checking four momentum conservation
   //////// NEED TO ADD SOME MORE CHECKS BUT CAN COME LATER ////////
   FourMomentum product_total_momentum;
-  int product_total_charge = 0;
+  double product_total_charge = 0;
   int product_total_lepton_number = 0;
   double product_total_baryon_number = 0;
+
+  // Counters for lepton and quark flavors
+  int electron_count = 0;
+  int muon_count = 0;
+  int tau_count = 0;
+  int up_count = 0;
+  int down_count = 0;
+  int charm_count = 0;
+  int strange_count = 0;
+  int top_count = 0;
+  int bottom_count = 0;
+
   for (const auto &product : decay_products)
   {
     product_total_momentum = product_total_momentum + product->get_four_momentum();
     product_total_charge = product_total_charge + product->get_charge();
+    std::cout << product_total_charge << std::endl;
     product_total_lepton_number = product_total_lepton_number + product->get_lepton_number();
     product_total_baryon_number = product_total_baryon_number + product->get_baryon_number();
+
+    // Check lepton flavors
+    if (dynamic_cast<const Electron *>(product.get()) || (dynamic_cast<const Neutrino *>(product.get()) && dynamic_cast<const Neutrino *>(product.get())->get_flavour() == "electron"))
+    {
+      if (product->get_lepton_number() == 1)
+      {
+        electron_count++;
+      }
+      else if (product->get_lepton_number() == -1)
+      {
+        electron_count--;
+      }
+    }
+    else if (dynamic_cast<const Muon *>(product.get()) || (dynamic_cast<const Neutrino *>(product.get()) && dynamic_cast<const Neutrino *>(product.get())->get_flavour() == "muon"))
+    {
+      if (product->get_lepton_number() == 1)
+      {
+        muon_count++;
+      }
+      else if (product->get_lepton_number() == -1)
+      {
+        muon_count--;
+      }
+    }
+    else if (dynamic_cast<const Tau *>(product.get()) || (dynamic_cast<const Neutrino *>(product.get()) && dynamic_cast<const Neutrino *>(product.get())->get_flavour() == "tau"))
+    {
+      if (product->get_lepton_number() == 1)
+      {
+        tau_count++;
+      }
+      else if (product->get_lepton_number() == -1)
+      {
+        tau_count--;
+      }
+    }
+    // Check quark flavours
+    if (dynamic_cast<const Up *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        up_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        up_count--;
+      }
+    }
+    else if (dynamic_cast<const Down *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        down_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        down_count--;
+      }
+    }
+    else if (dynamic_cast<const Charm *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        charm_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        charm_count--;
+      }
+    }
+    else if (dynamic_cast<const Strange *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        strange_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        strange_count--;
+      }
+    }
+    else if (dynamic_cast<const Top *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        top_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        top_count--;
+      }
+    }
+    else if (dynamic_cast<const Bottom *>(product.get()))
+    {
+      if (product->get_baryon_number() > 0)
+      {
+        bottom_count++;
+      }
+      else if (product->get_baryon_number() < 0)
+      {
+        bottom_count--;
+      }
+    }
   }
   FourMomentum diff = product_total_momentum - *four_momentum;
   // Check if the difference in each component is within an acceptable range
@@ -522,8 +664,57 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
                                  std::abs(diff.get_Px()) < 1e-5 &&
                                  std::abs(diff.get_Py()) < 1e-5 &&
                                  std::abs(diff.get_Pz()) < 1e-5;
-  bool charge_conserved = (charge == product_total_charge);
+  bool charge_conserved = (std::abs(charge - product_total_charge) < 0.01);
   bool lepton_number_conserved = (this->get_lepton_number() == product_total_lepton_number);
   bool baryon_number_conserved = (this->get_baryon_number() == product_total_baryon_number);
-  return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved);
+
+  // Check lepton flavor conservation
+  bool lepton_flavor_conserved = true;
+  if (dynamic_cast<const Electron *>(this) || (dynamic_cast<const Neutrino *>(this) && dynamic_cast<const Neutrino *>(this)->get_flavour() == "electron"))
+  {
+    lepton_flavor_conserved = (electron_count == this->get_lepton_number());
+  }
+  else if (dynamic_cast<const Muon *>(this) || (dynamic_cast<const Neutrino *>(this) && dynamic_cast<const Neutrino *>(this)->get_flavour() == "muon"))
+  {
+    lepton_flavor_conserved = (muon_count == this->get_lepton_number());
+  }
+  else if (dynamic_cast<const Tau *>(this) || (dynamic_cast<const Neutrino *>(this) && dynamic_cast<const Neutrino *>(this)->get_flavour() == "tau"))
+  {
+    lepton_flavor_conserved = (tau_count == this->get_lepton_number());
+  }
+
+  // Check quark flavor conservation
+  bool quark_flavor_conserved = true;
+  if (dynamic_cast<const Up *>(this))
+  {
+    quark_flavor_conserved = (up_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  else if (dynamic_cast<const Down *>(this))
+  {
+    quark_flavor_conserved = (down_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  else if (dynamic_cast<const Charm *>(this))
+  {
+    quark_flavor_conserved = (charm_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  else if (dynamic_cast<const Strange *>(this))
+  {
+    quark_flavor_conserved = (strange_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  else if (dynamic_cast<const Top *>(this))
+  {
+    quark_flavor_conserved = (top_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  else if (dynamic_cast<const Bottom *>(this))
+  {
+    quark_flavor_conserved = (bottom_count == static_cast<int>(this->get_baryon_number() * 3));
+  }
+  if (decay_type == DecayType::Weak)
+  {
+    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved);
+  }
+  else 
+  {
+    return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && quark_flavor_conserved);
+  }
 }

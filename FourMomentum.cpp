@@ -86,12 +86,15 @@ long double FourMomentum::get_Pz() const
 {
   return pz;
 }
+long double FourMomentum::get_P_magnitude() const
+{
+  return std::sqrt(px*px + py*py + pz*pz);
+}
 
 // Calculates velocity from four momentum in units of c
 long double FourMomentum::get_velocity_magnitude() const
 {
-  long double spatial_momentum_magnitude = std::sqrt(px*px + py*py + pz*pz);
-  long double velocity = spatial_momentum_magnitude / energy;
+  long double velocity = get_P_magnitude() / energy;
   return velocity;
 }
 long double FourMomentum::get_velocity_x() const
