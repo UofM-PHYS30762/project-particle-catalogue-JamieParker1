@@ -88,7 +88,7 @@ public:
 
   // Get a sub-container of pointers to particles of the same kind
   template <typename SubType>
-  std::vector<SubType *> get_sub_container() const
+  std::vector<SubType *> get_vector_of_subtype() const
   {
     std::vector<SubType *> sub_container;
     for (const auto &particle : particles)
@@ -101,6 +101,23 @@ public:
     }
     return sub_container;
   }
+
+  template <typename SubType>
+  ParticleCatalogue<SubType> get_sub_container() const
+  {
+    ParticleCatalogue<SubType> sub_container;
+    for (const auto &particle : particles)
+    {
+      SubType *casted = dynamic_cast<SubType *>(particle);
+      if (casted != nullptr)
+      {
+        sub_container.add_particle(casted);
+      }
+    }
+    return sub_container;
+  }
+
+
 
   // Print information about one or more particles of same type and derived types of this type
   template <typename SubType>

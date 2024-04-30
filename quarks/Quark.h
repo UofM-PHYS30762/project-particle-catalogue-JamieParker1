@@ -53,6 +53,8 @@ public:
   // Getters
   double get_baryon_number() const override {return baryon_number;}
   std::string get_flavour() const override {return flavour;}
+  Colour get_colour_charge() const override {return colour_charge;}
+  
   // Virtual print function
   virtual void print() const override;
 };

@@ -21,7 +21,7 @@ void display_program_showcase_menu();
 void display_custom_usage_menu();
 
 // Function to display user catalogue operations
-void display_user_Catalogue_operations_menu();
+void display_user_catalogue_operations_menu();
 
 // Function to display help menu
 void display_help();
@@ -32,11 +32,14 @@ void display_add_particles_menu();
 // Function to display the operations submenu
 void display_operations_menu();
 
+// Function to handle user input viewing operations on particle catalogue
+void display_catalogue_menu_navigation(ParticleCatalogue<Particle> &user_catalogue, bool sub_catalogue);
+
 // Function to handle user input for custom usage menu
 void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue);
 
 // Function to display program showcase options
-void program_showcase_menu_navigation(ParticleCatalogue<Particle> &showcase_catalogue);
+void program_showcase_menu_navigation();
 
 // Function to handle user input for main menu
-void main_menu_navigation(ParticleCatalogue<Particle> &showcase_catalogue, ParticleCatalogue<Particle> &user_catalogue);
+void main_menu_navigation(ParticleCatalogue<Particle> &user_catalogue);

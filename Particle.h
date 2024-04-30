@@ -54,7 +54,7 @@ private:
   std::string label; // Optional label of particle
   double charge;     // Charge of the particle
   double spin;       // Spin of particle
-  double rest_mass;  // Rest mass of particle
+  
   bool is_virtual = false;   // If particle is virtual - don't have to make checks on invariant mass and rest mass
 
   std::vector<DecayType> possible_decay_types;
@@ -66,6 +66,7 @@ private:
 protected:
   // Protected attribute so that derived classes can access four momentum object
   std::unique_ptr<FourMomentum> four_momentum;
+  double rest_mass;  // Rest mass of particle
   // Constructor without label
   Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label

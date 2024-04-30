@@ -11,7 +11,8 @@ class Neutrino : public Lepton
 {
 private:
   std::string flavour; 
-  bool has_interacted; 
+  bool has_interacted;
+  double determine_neutrino_mass(std::string flavour); 
 
 public:
   // Constructors

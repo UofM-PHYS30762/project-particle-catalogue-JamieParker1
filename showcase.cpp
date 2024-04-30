@@ -39,7 +39,6 @@ void showcase_basic_class_hierarchy()
   hierarchy_catalogue.add_particle(general_boson);
   hierarchy_catalogue.add_particle(general_quark);
 
-  
   std::cout << "==== Class Hierarchy Showcase ====\n";
   print_loading_string("Now outputting different class attributes for particle base classes", 4, true);
   print_loading_string("General Particle Attributes", 4, true);
@@ -53,6 +52,8 @@ void showcase_basic_class_hierarchy()
 
   print_loading_string("\nGeneral Boson Attributes", 4, true);
   hierarchy_catalogue.print_info_by_exact_type<Boson>();
+
+  wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
 void showcase_particle_attributes()
@@ -103,6 +104,8 @@ void showcase_particle_attributes()
   print_loading_string("\nAccessing Neutrino's interaction status:", 4, true);
   bool has_interacted = neutrino.get_has_interacted();
   std::cout << "Has Neutrino interacted? " << (has_interacted ? "Yes" : "No") << std::endl;
+
+  wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
 void showcase_decay_product_functionality()
@@ -131,7 +134,6 @@ void showcase_decay_product_functionality()
   print_loading_string("\nWe can see that Four Momentum has been conserved", 4, true);
   std::cout << "Higgs Four Momentum: " << higgs.get_four_momentum() << std::endl;
   std::cout << "Sum of products Four Momentum: " << higgs.get_decay_products()[0]->get_four_momentum() + higgs.get_decay_products()[1]->get_four_momentum() << std::endl;
-
 
   // Virtual decay: Higgs -> Z + Z (virtual)
   print_loading_string("\nVirtual decay: Higgs -> Z + Z (virtual)", 4, true);
@@ -181,8 +183,9 @@ void showcase_decay_product_functionality()
   std::cout << "Sum of Higgs products Four Momentum: " << higgs.get_decay_products()[0]->get_four_momentum() + higgs.get_decay_products()[1]->get_four_momentum() << std::endl;
   print_loading_string("\nIncluding down the decay chain", 4, true);
   std::cout << higgs.get_decay_products()[0]->get_label() << " Four Momentum: " << higgs.get_decay_products()[0]->get_four_momentum() << std::endl;
-  std::cout << "Sum of " << higgs.get_decay_products()[0]->get_label() <<" products Four Momentum: "<< higgs.get_decay_products()[0]->get_decay_products()[0]->get_four_momentum() + higgs.get_decay_products()[0]->get_decay_products()[1]->get_four_momentum() << std::endl;
+  std::cout << "Sum of " << higgs.get_decay_products()[0]->get_label() << " products Four Momentum: " << higgs.get_decay_products()[0]->get_decay_products()[0]->get_four_momentum() + higgs.get_decay_products()[0]->get_decay_products()[1]->get_four_momentum() << std::endl;
 
+  wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
 void showcase_four_momentum_class()
@@ -237,6 +240,7 @@ void showcase_four_momentum_class()
   particle_fm.lorentz_boost(v_xyz);
   std::cout << "Particle's FourMomentum after second identical Lorentz boost: " << particle_fm << std::endl;
 
+  wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
 void showcase_particle_catalogue()
@@ -248,12 +252,16 @@ void showcase_particle_catalogue()
   ParticleCatalogue<Particle> catalogue;
 
   // Adding particles to the catalogue
-  print_loading_string("Adding particles to the catalogue", 4, true);
-  fill_catalogue(catalogue);
+  print_loading_string("Adding only quarks and leptons to the catalogue for demonstration purposes", 4, true);
+  fill_leptons(catalogue);
+  fill_quarks(catalogue);
+  //fill_catalogue(catalogue);
 
   // Printing all particles in the catalogue
   print_loading_string("Printing all particles in the catalogue", 4, true);
   catalogue.print_all();
+
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
 
   // Getting the total number of particles in the catalogue
   print_loading_string("\nGetting the total number of particles in the catalogue", 4, true);
@@ -263,7 +271,7 @@ void showcase_particle_catalogue()
   // Getting the number of particles of each type
   print_loading_string("\nGetting the number of particles of each type", 4, true);
   std::map<std::string, int> particle_counts = catalogue.get_particle_count_by_type();
-  for (const auto& pair : particle_counts)
+  for (const auto &pair : particle_counts)
   {
     std::cout << pair.first << ": " << pair.second << std::endl;
   }
@@ -275,17 +283,46 @@ void showcase_particle_catalogue()
 
   // Getting a sub-container of particles of the same kind
   print_loading_string("\nGetting a sub-container of particles of the same kind", 4, true);
-  std::vector<Lepton*> leptons = catalogue.get_sub_container<Lepton>();
+  std::vector<Lepton *> leptons = catalogue.get_vector_of_subtype<Lepton>();
   std::cout << "Number of leptons: " << leptons.size() << std::endl;
+
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
 
   // Printing information about particles of a specific type
   print_loading_string("\nPrinting information about particles of a specific type", 4, true);
   std::cout << "Leptons:\n";
   catalogue.print_info_by_type<Lepton>();
 
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
+
   // Printing information about particles of an exact type
   print_loading_string("\nPrinting information about particles of an exact type", 4, true);
   std::cout << "Electrons:\n";
   catalogue.print_info_by_exact_type<Electron>();
 
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
+
+  // Sorting particles by rest mass
+  print_loading_string("\nSorting particles by rest mass", 4, true);
+  sort_by_rest_mass(catalogue);
+  std::cout << "Particles sorted by rest mass:\n";
+  catalogue.print_all();
+
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
+
+  // Removing a particle by label
+  print_loading_string("\nRemoving a particle by index (can also remove by label and by direct pointer)", 4, true);
+  size_t remove_index = 0;
+  catalogue.remove_particle(remove_index);
+  std::cout << "Particle at index 0 removed.\n";
+  catalogue.print_all();
+
+  wait_for_enter("\n\x1b[33mHit Enter to go to next step:\x1b[0m");
+
+  // Applying a function to all particles
+  print_loading_string("\nApplying a function to all particles - setting the label to 'random label'", 4, true);
+  catalogue.apply_function_to_particles<Particle>(&Particle::set_label, "random label");
+  catalogue.print_all();
+
+  wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }

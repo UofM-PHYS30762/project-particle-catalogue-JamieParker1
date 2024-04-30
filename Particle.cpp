@@ -219,9 +219,7 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     }
     else
     {
-      std::cerr << "Error: Auto-set decay products failed.\n";
-      std::cout << "Father fm:" << *four_momentum << std::endl;
-      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
+      std::cerr << "Error: Auto-set decay products failed. A value is not conserved.\n";
       return;
     }
   }
@@ -300,9 +298,7 @@ void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> de
     }
     else
     {
-      std::cerr << "Error: Auto-set decay products failed.\n";
-      std::cout << "Father fm:" << *four_momentum << std::endl;
-      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() + decay_products[2]->get_four_momentum() << std::endl;
+      std::cerr << "Error: Auto-set decay products failed. A value is not conserved.\n";
       return;
     }
   }
@@ -347,9 +343,7 @@ void Particle::auto_set_decay_products_virtual(std::vector<std::unique_ptr<Parti
     }
     else
     {
-      std::cerr << "Error: Auto-set decay products failed.\n";
-      std::cout << "Father fm:" << *four_momentum << std::endl;
-      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
+      std::cerr << "Error: Auto-set decay products failed. A value is not conserved.\n";
       return;
     }
   }
@@ -395,9 +389,7 @@ void Particle::auto_set_decay_products_virtual(std::vector<std::unique_ptr<Parti
     }
     else
     {
-      std::cerr << "Error: Auto-set decay products failed, four momentum not conserved.\n";
-      std::cout << "Father fm:" << *four_momentum << std::endl;
-      std::cout << "Product sum fm:" << decay_products[0]->get_four_momentum() + decay_products[1]->get_four_momentum() << std::endl;
+      std::cerr << "Error: Auto-set decay products failed. A value is not conserved.\n";
       return;
     }
   }
@@ -495,8 +487,9 @@ void Particle::print() const
 
   // Print table header
   std::cout << std::left;
-  std::cout << std::setw(column_width) << "Attribute"
-            << "Value" << std::endl;
+  std::cout << std::endl;
+  std::cout << std::setw(column_width) << "\033[1m\033[4m\x1b[34mParticle Details:\033[0m\x1b[0m" << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mAttribute\033[0m" << "\033[1mValue\033[0m" << std::endl;
 
   // Print separator line
   std::cout << std::setfill('-') << std::setw(2 * column_width) << "-" << std::endl;
@@ -556,7 +549,10 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
     product_total_charge = product_total_charge + product->get_charge();
     product_total_lepton_number = product_total_lepton_number + product->get_lepton_number();
     product_total_baryon_number = product_total_baryon_number + product->get_baryon_number();
-
+    if (product->get_colour_charge() != Colour::None)
+    {
+      colour_charges.push_back(product->get_colour_charge());
+    }
     // Check lepton flavors
     if (dynamic_cast<const Electron *>(product.get()) || (dynamic_cast<const Neutrino *>(product.get()) && dynamic_cast<const Neutrino *>(product.get())->get_flavour() == "electron"))
     {
@@ -658,10 +654,7 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
         bottom_count--;
       }
     }
-    if (dynamic_cast<const Quark *>(product.get()))
-    {
-      colour_charges.push_back(dynamic_cast<const Quark *>(product.get())->get_colour_charge());
-    }
+
   }
   FourMomentum diff = product_total_momentum - *four_momentum;
   // Check if the difference in each component is within an acceptable range

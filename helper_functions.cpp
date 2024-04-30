@@ -121,7 +121,7 @@ bool is_colour_neutral(Colour colour1, Colour colour2, Colour colour3)
         throw std::invalid_argument("Error: Unrecognised Colour");
       }
     }
-    if ((red_count+green_count+blue_count) == 1 || (red_count+green_count+blue_count) == -1)
+    if ((red_count == blue_count && blue_count == green_count))
     {
       return true;
     }
@@ -172,7 +172,7 @@ bool is_colour_neutral(std::vector<Colour> colour_charges)
         throw std::invalid_argument("Error: Unrecognised Colour");
       }
     }
-    if ((red_count+green_count+blue_count) == 1 || (red_count+green_count+blue_count) == -1)
+    if ((red_count == blue_count && blue_count == green_count))
     {
       return true;
     }
