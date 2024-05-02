@@ -189,7 +189,6 @@ bool is_colour_neutral(std::vector<Colour> colour_charges)
 }
 
 
-
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find)
 {
   // Iterate over the vector to check if the given type is present
@@ -451,15 +450,18 @@ void fill_catalogue(ParticleCatalogue<Particle> &catalogue)
 }
 
 // Sort catalogue by values
+
+
 void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue)
 {
-  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+  catalogue.template sort_particles_by_property([](const Particle *p1, const Particle *p2)
                                        {
     if (p1->get_rest_mass() && p2->get_rest_mass()) {
         return p1->get_rest_mass() < p2->get_rest_mass();
     }
     return false; });
 }
+
 void sort_by_charge(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
@@ -469,6 +471,7 @@ void sort_by_charge(ParticleCatalogue<Particle> &catalogue)
     }
     return false; });
 }
+
 void sort_by_spin(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
@@ -478,6 +481,7 @@ void sort_by_spin(ParticleCatalogue<Particle> &catalogue)
     }
     return false; });
 }
+
 void sort_by_energy(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
@@ -487,6 +491,7 @@ void sort_by_energy(ParticleCatalogue<Particle> &catalogue)
     }
     return false; });
 }
+
 void sort_by_momentum(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
@@ -496,6 +501,7 @@ void sort_by_momentum(ParticleCatalogue<Particle> &catalogue)
     }
     return false; });
 }
+
 void sort_by_velocity(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
@@ -505,6 +511,8 @@ void sort_by_velocity(ParticleCatalogue<Particle> &catalogue)
     }
     return false; });
 }
+
+
 
 
 

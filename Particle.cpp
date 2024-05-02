@@ -6,6 +6,42 @@
 #include <stdexcept> // For std::invalid_argument
 #include <iomanip>
 
+namespace Mass
+{
+  double string_to_mass(const std::string &particle)
+  {
+    static const std::map<std::string, double> mass_map = {
+        {"electron", electron},
+        {"muon", muon},
+        {"tau", tau},
+        {"electron_neutrino", electron_neutrino},
+        {"muon_neutrino", muon_neutrino},
+        {"tau_neutrino", tau_neutrino},
+        {"neutrino", neutrino},
+        {"w", w},
+        {"z", z},
+        {"higgs", higgs},
+        {"up", up},
+        {"down", down},
+        {"charm", charm},
+        {"bottom", bottom},
+        {"top", top},
+        {"strange", strange},
+        {"gluon", gluon},
+        {"photon", photon}};
+
+    auto it = mass_map.find(particle);
+    if (it != mass_map.end())
+    {
+      return it->second;
+    }
+    else
+    {
+      throw std::invalid_argument("Unknown particle");
+    }
+  }
+}
+
 // Default constructor
 Particle::Particle() : type("particle"), label("General Particle"), charge(0), rest_mass(1), four_momentum(std::make_unique<FourMomentum>(1, 0, 0, 0, true)), possible_decay_types(std::vector<DecayType>{DecayType::None}) {}
 
@@ -153,6 +189,10 @@ void Particle::set_decay_products(std::vector<std::unique_ptr<Particle>> decay_p
 
 void Particle::auto_set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type)
 {
+  if (decay_type == DecayType::None)
+  {
+    return;
+  }
   if (!contains_decay_type(possible_decay_types, decay_type))
   {
     std::cerr << "Error: Particle cannot decay via that path\n";
@@ -489,7 +529,8 @@ void Particle::print() const
   std::cout << std::left;
   std::cout << std::endl;
   std::cout << std::setw(column_width) << "\033[1m\033[4m\x1b[34mParticle Details:\033[0m\x1b[0m" << std::endl;
-  std::cout << std::setw(column_width) << "\033[1mAttribute\033[0m" << "\033[1mValue\033[0m" << std::endl;
+  std::cout << std::setw(column_width) << "\033[1mAttribute\033[0m"
+            << "\033[1mValue\033[0m" << std::endl;
 
   // Print separator line
   std::cout << std::setfill('-') << std::setw(2 * column_width) << "-" << std::endl;
@@ -654,7 +695,6 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
         bottom_count--;
       }
     }
-
   }
   FourMomentum diff = product_total_momentum - *four_momentum;
   // Check if the difference in each component is within an acceptable range
@@ -712,7 +752,7 @@ bool Particle::validate_decay_products(const std::vector<std::unique_ptr<Particl
   {
     return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && colour_charge_conserved);
   }
-  else 
+  else
   {
     return (four_momentum_conserved && charge_conserved && lepton_number_conserved && baryon_number_conserved && lepton_flavor_conserved && quark_flavor_conserved && colour_charge_conserved);
   }

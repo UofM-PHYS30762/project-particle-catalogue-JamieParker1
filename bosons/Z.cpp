@@ -4,14 +4,14 @@
 
 // Constructor without label 
 Z::Z(std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("z", 0, 91200, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
+    : Boson("z", 0, Mass::z, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
 
 // Constructor with label 
 Z::Z(const std::string &label, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("z", label, 0, 91200, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
+    : Boson("z", label, 0, Mass::z, 1, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak}) {}
 
 // Default constructor
-Z::Z() : Boson("z", 0, 91200, 1, std::vector<DecayType>{DecayType::Weak}) {}
+Z::Z() : Boson("z", 0, Mass::z, 1, std::vector<DecayType>{DecayType::Weak}) {}
 
 // Copy constructor
 Z::Z(const Z &other)

@@ -4,7 +4,7 @@
 #include <memory> // For std::unique_ptr
 #include <vector> // For std::vector
 #include <string> // For std::string
-
+#include <map>
 #include "FourMomentum.h"
 
 namespace Mass
@@ -12,6 +12,7 @@ namespace Mass
   constexpr double electron = 0.511;
   constexpr double muon = 105.7;
   constexpr double tau = 1777;
+  constexpr double neutrino = 2.2e-6;
   constexpr double electron_neutrino = 2.2e-6;
   constexpr double muon_neutrino = 0.17;
   constexpr double tau_neutrino = 15.5;
@@ -26,6 +27,11 @@ namespace Mass
   constexpr double bottom = 4180;
   constexpr double top = 173070;
   constexpr double strange = 95;
+
+  constexpr double gluon = 0;
+  constexpr double photon = 0;
+  double string_to_mass(const std::string &particle);
+
 }
 
 enum class DecayType
@@ -54,8 +60,8 @@ private:
   std::string label; // Optional label of particle
   double charge;     // Charge of the particle
   double spin;       // Spin of particle
-  
-  bool is_virtual = false;   // If particle is virtual - don't have to make checks on invariant mass and rest mass
+
+  bool is_virtual = false; // If particle is virtual - don't have to make checks on invariant mass and rest mass
 
   std::vector<DecayType> possible_decay_types;
   DecayType current_decay_type;
@@ -66,7 +72,7 @@ private:
 protected:
   // Protected attribute so that derived classes can access four momentum object
   std::unique_ptr<FourMomentum> four_momentum;
-  double rest_mass;  // Rest mass of particle
+  double rest_mass; // Rest mass of particle
   // Constructor without label
   Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label

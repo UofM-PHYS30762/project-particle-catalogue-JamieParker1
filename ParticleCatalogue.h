@@ -46,6 +46,7 @@ public:
     }
   }
 
+  // Prints every particle in container
   void print_all() const
   {
     std::for_each(particles.begin(), particles.end(), [](const T *particle)
@@ -102,22 +103,20 @@ public:
     return sub_container;
   }
 
+
   template <typename SubType>
-  ParticleCatalogue<SubType> get_sub_container() const
+  ParticleCatalogue<T> get_sub_container() const
   {
-    ParticleCatalogue<SubType> sub_container;
+    ParticleCatalogue<T> sub_container;
     for (const auto &particle : particles)
     {
-      SubType *casted = dynamic_cast<SubType *>(particle);
-      if (casted != nullptr)
+      if (const SubType *casted = dynamic_cast<const SubType *>(particle))
       {
-        sub_container.add_particle(casted);
+        sub_container.add_particle(const_cast<SubType *>(casted));
       }
     }
     return sub_container;
   }
-
-
 
   // Print information about one or more particles of same type and derived types of this type
   template <typename SubType>
@@ -168,7 +167,7 @@ public:
   void remove_particle(const T *particle)
   {
     particles.erase(std::remove(particles.begin(), particles.end(), particle), particles.end());
-    unique_particles.erase(const_cast<T*>(particle));
+    unique_particles.erase(const_cast<T *>(particle));
   }
   void remove_particle(size_t index)
   {

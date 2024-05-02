@@ -11,14 +11,14 @@
 
 // Constructor without label
 Tau::Tau(std::unique_ptr<FourMomentum> four_momentum, std::vector<std::unique_ptr<Particle>> decay_products, int lepton_number)
-    : Lepton("tau", (lepton_number == 1) ? -1 : 1, 1777, std::move(four_momentum), lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
+    : Lepton("tau", (lepton_number == 1) ? -1 : 1, Mass::tau, std::move(four_momentum), lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
 
 // Constructor with label
 Tau::Tau(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, std::vector<std::unique_ptr<Particle>> decay_products, int lepton_number)
-    : Lepton("tau", label, (lepton_number == 1) ? -1 : 1, 1777, std::move(four_momentum), lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
+    : Lepton("tau", label, (lepton_number == 1) ? -1 : 1, Mass::tau, std::move(four_momentum), lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
 
 // Default constructor
-Tau::Tau(int lepton_number) : Lepton("tau", -1, 1777, lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
+Tau::Tau(int lepton_number) : Lepton("tau", (lepton_number == 1) ? -1 : 1, Mass::tau, lepton_number, std::vector<DecayType>{DecayType::Weak}) {}
 
 // Copy constructor
 Tau::Tau(const Tau &other)

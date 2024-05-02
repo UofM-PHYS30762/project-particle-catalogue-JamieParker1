@@ -32,6 +32,7 @@
 #include <chrono> // For std::chrono::seconds
 #include <iostream>
 #include <string>
+#include <typeindex>
 
 std::string to_string(Colour colour);
 std::string to_string(DecayType decay_type);
@@ -61,13 +62,78 @@ void fill_particles(ParticleCatalogue<Particle> &catalogue);
 void fill_anti_particles(ParticleCatalogue<Particle> &catalogue);
 void fill_catalogue(ParticleCatalogue<Particle> &catalogue);
 
-void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue);
-void sort_by_charge(ParticleCatalogue<Particle> &catalogue);
-void sort_by_spin(ParticleCatalogue<Particle> &catalogue);
-void sort_by_energy(ParticleCatalogue<Particle> &catalogue);
-void sort_by_momentum(ParticleCatalogue<Particle> &catalogue);
-void sort_by_velocity(ParticleCatalogue<Particle> &catalogue);
 
+void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue);
+
+void sort_by_charge(ParticleCatalogue<Particle> &catalogue);
+
+void sort_by_spin(ParticleCatalogue<Particle> &catalogue);
+
+void sort_by_energy(ParticleCatalogue<Particle> &catalogue);
+
+void sort_by_momentum(ParticleCatalogue<Particle> &catalogue);
+
+void sort_by_velocity(ParticleCatalogue<Particle> &catalogue);
+// template <typename ParticleType>
+// void sort_by_rest_mass(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.template sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_rest_mass() && p2->get_rest_mass()) {
+//         return p1->get_rest_mass() < p2->get_rest_mass();
+//     }
+//     return false; });
+// }
+// template <typename ParticleType>
+// void sort_by_charge(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_charge() && p2->get_charge()) {
+//         return p1->get_charge() < p2->get_charge();
+//     }
+//     return false; });
+// }
+// template <typename ParticleType>
+// void sort_by_spin(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_spin() && p2->get_spin()) {
+//         return p1->get_spin() < p2->get_spin();
+//     }
+//     return false; });
+// }
+// template <typename ParticleType>
+// void sort_by_energy(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_four_momentum().get_energy() && p2->get_four_momentum().get_energy()) {
+//         return p1->get_four_momentum().get_energy() < p2->get_four_momentum().get_energy();
+//     }
+//     return false; });
+// }
+// template <typename ParticleType>
+// void sort_by_momentum(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_four_momentum().get_P_magnitude() && p2->get_four_momentum().get_P_magnitude()) {
+//         return p1->get_four_momentum().get_P_magnitude() < p2->get_four_momentum().get_P_magnitude();
+//     }
+//     return false; });
+// }
+// template <typename ParticleType>
+// void sort_by_velocity(ParticleCatalogue<ParticleType> &catalogue)
+// {
+//   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+//                                        {
+//     if (p1->get_four_momentum().get_velocity_magnitude() && p2->get_four_momentum().get_velocity_magnitude()) {
+//         return p1->get_four_momentum().get_velocity_magnitude() < p2->get_four_momentum().get_velocity_magnitude();
+//     }
+//     return false; });
+// }
 
 
 

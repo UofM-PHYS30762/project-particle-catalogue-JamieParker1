@@ -5,14 +5,14 @@
 
 // Constructor without label
 Higgs::Higgs(std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("higgs", 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
+    : Boson("higgs", 0, Mass::higgs, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
 
 // Constructor with label
 Higgs::Higgs(const std::string &label, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("higgs", label, 0, 126000, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
+    : Boson("higgs", label, 0, Mass::higgs, 0, std::move(four_momentum), std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
 
 // Default constructor
-Higgs::Higgs() : Boson("higgs", 0, 126000, 0, std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
+Higgs::Higgs() : Boson("higgs", 0, Mass::higgs, 0, std::vector<DecayType>{DecayType::Weak, DecayType::Strong, DecayType::Electromagnetic}) {}
 
 // Copy constructor
 Higgs::Higgs(const Higgs &other)

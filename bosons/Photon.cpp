@@ -5,14 +5,14 @@
 
 // Constructor without label with validity check
 Photon::Photon(std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("photon", 0, 0, 0, std::move(four_momentum)) {}
+    : Boson("photon", 0, Mass::photon, 0, std::move(four_momentum)) {}
 
 // Constructor with label with validity check
 Photon::Photon(const std::string &label, std::unique_ptr<FourMomentum> four_momentum)
-    : Boson("photon", label, 0, 0, 0, std::move(four_momentum)) {}
+    : Boson("photon", label, 0, Mass::photon, 0, std::move(four_momentum)) {}
 
 //Default constructor
-Photon::Photon() : Boson("photon", 0, 0, 0) {}
+Photon::Photon() : Boson("photon", 0, Mass::photon, 0) {}
 
 // Copy constructor
 Photon::Photon(const Photon &other)

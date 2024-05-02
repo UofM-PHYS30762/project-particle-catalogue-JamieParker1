@@ -26,6 +26,7 @@
 #include <sstream>
 #include <limits>
 
+
 void showcase_basic_class_hierarchy()
 {
   Particle *general_particle = new Particle();

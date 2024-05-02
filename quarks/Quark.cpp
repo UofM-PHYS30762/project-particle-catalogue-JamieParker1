@@ -21,7 +21,7 @@ Quark::Quark(std::string flavour, double charge, double rest_mass, std::unique_p
 
 
 // Protected constructor with label with four momentum
-Quark::Quark(std::string flavour, const std::string &label, double charge,  double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charger)
+Quark::Quark(std::string flavour, const std::string &label, double charge,  double rest_mass, std::unique_ptr<FourMomentum> four_momentum, double baryon_number, Colour colour_charge)
     : Particle((baryon_number > 0) ? "quark" : "antiquark", label, charge, 0.5, rest_mass, std::move(four_momentum), std::vector<DecayType>{DecayType::None}), baryon_number(baryon_number), flavour(flavour)
 {
   set_colour_charge(colour_charge);
@@ -79,6 +79,7 @@ Quark &Quark::operator=(Quark &&other) noexcept
 
 bool Quark::is_valid_colour_charge(Colour colour_charge)
 {
+
   if(baryon_number < 0 && is_anti_colour(colour_charge))
   {
     return true;

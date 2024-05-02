@@ -7,20 +7,20 @@
 
 // Constructor without label with validity check
 Gluon::Gluon(std::unique_ptr<FourMomentum> four_momentum, std::vector<Colour> colour_charges)
-    : Boson("gluon", 0, 1, 0, std::move(four_momentum))
+    : Boson("gluon", 0, Mass::gluon, 1, std::move(four_momentum))
 {
   set_colour_charges(colour_charges);
 }
 
 // Constructor with label with validity check
 Gluon::Gluon(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, std::vector<Colour> colour_charges)
-    : Boson("gluon", label, 0, 1, 0, std::move(four_momentum))
+    : Boson("gluon", label, 0, Mass::gluon, 1, std::move(four_momentum))
 {
   set_colour_charges(colour_charges);
 }
 
 // Default constructor
-Gluon::Gluon() : Boson("gluon", 0, 1, 0), colour_charges(std::vector<Colour>{Colour::Red, Colour::AntiRed}) {}
+Gluon::Gluon() : Boson("gluon", 0, Mass::gluon, 1), colour_charges(std::vector<Colour>{Colour::Red, Colour::AntiRed}) {}
 
 // Copy constructor
 Gluon::Gluon(const Gluon &other)

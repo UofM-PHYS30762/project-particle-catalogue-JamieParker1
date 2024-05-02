@@ -7,20 +7,20 @@
 
 // Constructor without label with validity check
 Electron::Electron(std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number)
-    : Lepton("electron", (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number)
+    : Lepton("electron", (lepton_number == 1) ? -1 : 1, Mass::electron, std::move(four_momentum), lepton_number)
 {
   set_energy_deposited_in_layers(energy_deposited_in_layers);
 }
 
 // Constructor with label with validity check
 Electron::Electron(const std::string &label, std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number)
-    : Lepton("electron", label, (lepton_number == 1) ? -1 : 1, 0.511, std::move(four_momentum), lepton_number)
+    : Lepton("electron", label, (lepton_number == 1) ? -1 : 1, Mass::electron, std::move(four_momentum), lepton_number)
 {
   set_energy_deposited_in_layers(energy_deposited_in_layers);
 }
 
 // Default constructor
-Electron::Electron(int lepton_number) : Lepton("electron", (lepton_number == 1) ? -1 : 1, 0.511, lepton_number), energy_deposited_in_layers(std::vector<double>{0.12775, 0.12775, 0.12775, 0.12775}) {}
+Electron::Electron(int lepton_number) : Lepton("electron", (lepton_number == 1) ? -1 : 1, Mass::electron, lepton_number), energy_deposited_in_layers(std::vector<double>{0.12775, 0.12775, 0.12775, 0.12775}) {}
 
 // Copy constructor
 Electron::Electron(const Electron &other)
