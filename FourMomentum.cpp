@@ -1,6 +1,4 @@
 #include "FourMomentum.h"
-#include <cmath>
-#include <vector>
 
 // Constructor
 FourMomentum::FourMomentum(long double energy_or_rest_mass, long double px, long double py, long double pz, bool energy_is_rest_mass)
@@ -61,7 +59,6 @@ void FourMomentum::set_energy(double energy)
 {
   this->energy = energy;
 }
-
 void FourMomentum::set_momentum(double px, double py, double pz)
 {
   this->px = px;
@@ -121,7 +118,7 @@ std::vector<long double> FourMomentum::get_velocity_vector(bool positive) const
   }
 }
 
-// Function to calculate the invariant mass
+// Function to calculate the invariant mass of the four momentum
 double FourMomentum::invariant_mass() const
 {
   // std::amax to prevent sqrt of a negative

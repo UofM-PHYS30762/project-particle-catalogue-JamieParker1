@@ -1,4 +1,3 @@
-// Quark.cpp
 #include "Quark.h"
 #include "../FourMomentum.h" 
 #include"../helper_functions.h"

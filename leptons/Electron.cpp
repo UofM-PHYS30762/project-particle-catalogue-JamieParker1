@@ -1,9 +1,4 @@
 #include "Electron.h"
-#include <iostream>
-#include <utility>   // For std::move
-#include <numeric>   // For std::accumulate
-#include <stdexcept> // For std::invalid_argument
-#include <iomanip>
 
 // Constructor without label with validity check
 Electron::Electron(std::unique_ptr<FourMomentum> four_momentum, const std::vector<double> &energy_deposited_in_layers, int lepton_number)

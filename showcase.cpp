@@ -26,7 +26,8 @@
 #include <sstream>
 #include <limits>
 
-
+// Showcase the basic class hierarchy of particles
+// Demonstrates the attributes of the base classes: Particle, Lepton, Quark, and Boson
 void showcase_basic_class_hierarchy()
 {
   Particle *general_particle = new Particle();
@@ -57,6 +58,8 @@ void showcase_basic_class_hierarchy()
   wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
+// Showcase specific particle attributes
+// Demonstrates the unique attributes of Electron, Muon, and Neutrino objects
 void showcase_particle_attributes()
 {
   std::cout << "==== Particle Attribute Showcase ====\n";
@@ -109,6 +112,8 @@ void showcase_particle_attributes()
   wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
+// Showcase the decay product functionality
+// Demonstrates the decay processes of Higgs boson and the conservation of four-momentum in decays
 void showcase_decay_product_functionality()
 {
   std::cout << "==== Decay Product Functionality Showcase ====\n";
@@ -189,6 +194,8 @@ void showcase_decay_product_functionality()
   wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
+// Showcase the FourMomentum class
+// Demonstrates the usage and functionality of the FourMomentum class
 void showcase_four_momentum_class()
 {
   std::cout << "==== FourMomentum Class Showcase ====\n";
@@ -244,6 +251,8 @@ void showcase_four_momentum_class()
   wait_for_enter("\n\x1b[33mHit Enter to go back to the menu:\x1b[0m");
 }
 
+// Showcase the ParticleCatalogue class
+// Demonstrates the usage and functionality of the ParticleCatalogue class
 void showcase_particle_catalogue()
 {
   std::cout << "==== Particle Catalogue Showcase ====\n";

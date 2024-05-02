@@ -1,7 +1,4 @@
 #include "Higgs.h"
-#include "../helper_functions.h"
-#include <utility> // For std::move
-#include <iomanip>
 
 // Constructor without label
 Higgs::Higgs(std::unique_ptr<FourMomentum> four_momentum)

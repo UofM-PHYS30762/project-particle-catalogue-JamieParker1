@@ -2,11 +2,17 @@
 #define GLUON_H
 
 #include "Boson.h"
+#include "../helper_functions.h"
 #include "../FourMomentum.h"
+
 #include <vector>
 #include <string>
+#include <iostream>
+#include <utility>   
+#include <numeric>   
+#include <stdexcept> 
  
-// Electron class 
+// Gluon class 
 class Gluon : public Boson
 {
 private:

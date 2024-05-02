@@ -1,6 +1,5 @@
 #include "W.h"
-#include "../helper_functions.h"
-#include <utility> // For std::move
+
 
 // Constructor without label
 W::W(int charge, std::unique_ptr<FourMomentum> four_momentum)

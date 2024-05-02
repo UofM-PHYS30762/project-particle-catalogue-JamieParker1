@@ -1,13 +1,4 @@
 #include "Tau.h"
-#include "../FourMomentum.h"
-#include <iostream>
-#include <utility>
-#include <numeric>
-#include <cmath>
-#include <vector>
-#include <memory>
-#include <random>
-#include <iomanip>
 
 // Constructor without label
 Tau::Tau(std::unique_ptr<FourMomentum> four_momentum, std::vector<std::unique_ptr<Particle>> decay_products, int lepton_number)

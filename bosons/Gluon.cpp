@@ -1,9 +1,4 @@
 #include "Gluon.h"
-#include "../helper_functions.h"
-#include <iostream>
-#include <utility>   // For std::move
-#include <numeric>   // For std::accumulate
-#include <stdexcept> // For std::invalid_argument
 
 // Constructor without label with validity check
 Gluon::Gluon(std::unique_ptr<FourMomentum> four_momentum, std::vector<Colour> colour_charges)

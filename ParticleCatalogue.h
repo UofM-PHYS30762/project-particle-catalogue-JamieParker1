@@ -20,8 +20,10 @@ private:
   std::set<T *> unique_particles;
 
 public:
+  // Default constructor. Initializes a new instance of the ParticleCatalogue class with no particles.
   ParticleCatalogue() = default;
 
+  // Destructor. Frees memory for all particle pointers managed by the catalogue and clears the container of particles and unique particles.
   ~ParticleCatalogue()
   {
     for (auto &particle : particles)
@@ -32,6 +34,7 @@ public:
     unique_particles.clear();
   }
 
+  // Adds a particle to the catalogue. If the particle is not already present (as determined by a set of unique pointers), it adds the particle to both the vector and the set. If the particle is a duplicate, it prints a warning.
   void add_particle(T *particle)
   {
     // Check if the particle pointer is already added
@@ -46,20 +49,20 @@ public:
     }
   }
 
-  // Prints every particle in container
+  //  Prints information for every particle in the catalogue using each particle's print method.
   void print_all() const
   {
     std::for_each(particles.begin(), particles.end(), [](const T *particle)
                   { particle->print(); });
   }
 
-  // Get the total number of particles
+  //  Returns the total number of particles in the catalogue
   size_t get_number_of_particles() const
   {
     return particles.size();
   }
 
-  // Get number of particles of each type
+  // Returns a map where keys are particle type names and values are the counts of particles of each type.
   std::map<std::string, int> get_particle_count_by_type() const
   {
     std::map<std::string, int> counts;
@@ -80,14 +83,14 @@ public:
     return counts;
   }
 
-  // Sum the four-momentum of all particles
+  // Calculates and returns the total four-momentum of all particles in the catalogue by summing their individual four-momenta.
   FourMomentum sum_four_momenta() const
   {
     return std::accumulate(particles.begin(), particles.end(), FourMomentum(), [](const FourMomentum &sum, const T *particle)
                            { return sum + particle->get_four_momentum(); });
   }
 
-  // Get a sub-container of pointers to particles of the same kind
+  // Returns a vector containing pointers to all particles in the catalogue that can be dynamically cast to a specified subtype.
   template <typename SubType>
   std::vector<SubType *> get_vector_of_subtype() const
   {
@@ -103,6 +106,7 @@ public:
     return sub_container;
   }
 
+  // Returns a new ParticleCatalogue that contains all particles of a specified subtype.
   template <typename SubType>
   ParticleCatalogue<SubType> get_sub_container() const
   {
@@ -117,6 +121,7 @@ public:
     return sub_container;
   }
 
+  // Similar to get_sub_container<SubType>(), but returns a new ParticleCatalogue containing particles of the same type as the specified subtype.
   template <typename SubType>
   ParticleCatalogue<T> get_sub_container_of_same_type() const
   {
@@ -131,7 +136,7 @@ public:
     return sub_container;
   }
 
-  // Print information about one or more particles of same type and derived types of this type
+  // Prints information for all particles in the catalogue that are of a specified type or a derived type, using dynamic casting.
   template <typename SubType>
   void print_info_by_type() const
   {
@@ -144,7 +149,7 @@ public:
       } });
   }
 
-  // Print information about one or more particles of the same exact type
+  // Prints information for all particles in the catalogue that are of the exact specified type, using RTTI (Run-Time Type Information)
   template <typename SubType>
   void print_info_by_exact_type() const
   {
@@ -156,7 +161,7 @@ public:
           } });
   }
 
-  // Return vector of pointers to particles with a given label
+  // Returns a vector of pointers to all particles that have a specific label.
   std::vector<Particle *> find_particles_by_label(const std::string &label) const
   {
     std::vector<Particle *> result;
@@ -165,6 +170,7 @@ public:
     return result;
   }
 
+  // Retrieves a vector containing the labels of all particles in the catalogue
   std::vector<std::string> get_all_labels() const
   {
     std::vector<std::string> labels;
@@ -175,7 +181,7 @@ public:
     return labels;
   }
 
-  // Overloaded functions to remove particles via label, pointer, or index
+  // Overloaded functions to remove particles via label, pointer, index or type
   void remove_particle(const std::string &label)
   {
     particles.erase(std::remove_if(particles.begin(), particles.end(), [&label, this](const T *particle)
@@ -200,6 +206,19 @@ public:
       particles.erase(particles.begin() + index);
     }
   }
+  template <typename SubType>
+  void remove_particles_by_type()
+  {
+    auto it = std::remove_if(particles.begin(), particles.end(), [](const Particle *particle)
+                             { return dynamic_cast<const SubType *>(particle) != nullptr; });
+    for (auto ptr = it; ptr != particles.end(); ++ptr)
+    {
+      unique_particles.erase(*ptr);
+      delete *ptr;
+    }
+    particles.erase(it, particles.end());
+  }
+  // Clears the catalogue of all particles, properly freeing memory and clearing the internal containers
   void clear_all_particles()
   {
     for (auto &particle : particles)
@@ -209,19 +228,8 @@ public:
     particles.clear();
     unique_particles.clear();
   }
-  template<typename SubType>
-  void remove_particles_by_type() {
-      auto it = std::remove_if(particles.begin(), particles.end(), [](const Particle* particle) {
-          return dynamic_cast<const SubType*>(particle) != nullptr;
-      });
-      for (auto ptr = it; ptr != particles.end(); ++ptr) {
-          unique_particles.erase(*ptr);
-          delete *ptr;
-      }
-      particles.erase(it, particles.end());
-  }
   
-  // Function to sort the catalogue via a variable
+  // Sorts the particles in the catalogue according to a specified comparator function. If reverse is true, the sort is in descending order.
   template <typename Compare>
   void sort_particles_by_property(Compare compare, bool reverse = false)
   {
@@ -235,8 +243,7 @@ public:
     }
   }
 
-  // Overloaded function to apply same function to multple particles
-  //  Via vector of particle labels
+  // Applies a function to all particles or to particles with specified labels.
   template <typename Function, typename... Args>
   void apply_function_to_particles(Function function, Args &&...args, const std::vector<std::string> &labels = {})
   {
@@ -259,6 +266,7 @@ public:
     }
   }
 
+  // Applies a function to all particles of a specified subtype.
   template <typename SubType, typename Function, typename... Args>
   void apply_function_to_particles(Function function, Args &&...args)
   {

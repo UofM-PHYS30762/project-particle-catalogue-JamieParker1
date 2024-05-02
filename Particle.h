@@ -1,12 +1,13 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#include <memory> // For std::unique_ptr
-#include <vector> // For std::vector
-#include <string> // For std::string
+#include <memory>
+#include <vector>
+#include <string>
 #include <map>
 #include "FourMomentum.h"
 
+// Namespace of constans for particle masses
 namespace Mass
 {
   constexpr double electron = 0.511;
@@ -34,6 +35,7 @@ namespace Mass
 
 }
 
+// Enum class for possible particle decay types
 enum class DecayType
 {
   Weak,
@@ -42,6 +44,7 @@ enum class DecayType
   None
 };
 
+// Enum class for different colour charges
 enum class Colour
 {
   Red,
@@ -53,37 +56,40 @@ enum class Colour
   None
 };
 
+// Base Particle class
 class Particle
 {
 private:
-  std::string type;  // Type of particle e.g 'electron', 'muon' ...
-  std::string label; // Optional label of particle
-  double charge;     // Charge of the particle
-  double spin;       // Spin of particle
-
+  std::string type;        // Type of particle e.g 'electron', 'muon' ...
+  std::string label;       // Label of particle
+  double charge;           // Charge of the particle
+  double spin;             // Spin of particle
   bool is_virtual = false; // If particle is virtual - don't have to make checks on invariant mass and rest mass
 
-  std::vector<DecayType> possible_decay_types;
-  DecayType current_decay_type;
-  std::vector<std::unique_ptr<Particle>> decay_products;
-  bool validate_decay_products(const std::vector<std::unique_ptr<Particle>> &decay_products, DecayType decay_type) const;
+  std::vector<DecayType> possible_decay_types; // Vector of decay types
+  DecayType current_decay_type; // Current decay type of particle if one has been set
+  std::vector<std::unique_ptr<Particle>> decay_products; // Vector of decay products
+  // Validates decay products conserve relevant quantities
+  bool validate_decay_products(const std::vector<std::unique_ptr<Particle>> &decay_products, DecayType decay_type) const; 
+  // Sets decay products calculating four momentum for virtual particles
   void auto_set_decay_products_virtual(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
 
 protected:
-  // Protected attribute so that derived classes can access four momentum object
-  std::unique_ptr<FourMomentum> four_momentum;
+  std::unique_ptr<FourMomentum> four_momentum; // Four Momentum unique pointer
   double rest_mass; // Rest mass of particle
+
+  // Protected constructors allow for four momentum to be passed through
   // Constructor without label
   Particle(std::string type, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> four_momentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
   // Constructor with label
   Particle(std::string type, const std::string &label, double charge, double spin, double rest_mass, std::unique_ptr<FourMomentum> fourMomentum, std::vector<DecayType> possible_decay_types = {DecayType::None});
+  
   // Function to check if invariant mass of four momentum matches rest mass
   bool is_invariant_mass_valid(double invariant_mass) const;
 
 public:
   // Default constructor
   Particle();
-
   // Parameterized constructors
   // Constructor without label
   Particle(std::string type, double charge, double spin, double rest_mass, std::vector<DecayType> possible_decay_types = {DecayType::None});
@@ -110,7 +116,6 @@ public:
   void set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
   void auto_set_decay_products(std::vector<std::unique_ptr<Particle>> decay_products, DecayType decay_type);
   void set_is_virtual(bool is_virtual);
-  // void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum);
   virtual void set_four_momentum(std::unique_ptr<FourMomentum> fourMomentum);
 
   // Getters

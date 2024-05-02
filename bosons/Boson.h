@@ -1,11 +1,15 @@
 #ifndef BOSON_H
 #define BOSON_H
 
-#include <memory> // For std::unique_ptr
-#include <vector> // For std::vector
-#include <string> // For std::string
+#include <memory> 
+#include <vector> 
+#include <string> 
+#include <iostream>  // For std::cout
+#include <stdexcept> // For std::invalid_argument
+#include <iomanip>
 
 #include "../Particle.h"
+#include "../FourMomentum.h" 
 
 class Boson : public Particle
 {

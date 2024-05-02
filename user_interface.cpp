@@ -8,7 +8,7 @@ double get_valid_number(const std::string &prompt, double minVal, double maxVal)
   while (true)
   {
     std::cout << prompt;
-    std::getline(std::cin, input); // Read the whole line into a string
+    std::getline(std::cin, input);
 
     std::stringstream ss(input);
     ss >> number;
@@ -32,7 +32,7 @@ int get_integer_input(const std::string &prompt, int min_value, int max_value)
   while (true)
   {
     std::cout << prompt;
-    std::getline(std::cin, input); // Read the whole line into a string
+    std::getline(std::cin, input);
 
     std::stringstream ss(input);
     if (!(ss >> number) || !ss.eof())
@@ -61,6 +61,7 @@ int get_integer_input(const std::string &prompt, int min_value, int max_value)
   }
 }
 
+// Gets a particle type from the user
 std::string input_particle_type()
 {
   std::cout << "==== Particles ====\n";
@@ -95,6 +96,7 @@ std::string input_particle_type()
   }
   return "particle";
 }
+// Gets a specific particle type from the user
 std::string input_specific_particle_type()
 {
   std::cout << "==== Particle Types ====\n";
@@ -248,6 +250,17 @@ void display_user_catalogue_operations_menu()
 void display_help()
 {
   std::cout << "  ==== Help Menu ====\n";
+  std::cout << "This program allows you to explore and interact with a catalog of particles.\n";
+  std::cout << "The main menu offers the following options:\n";
+  std::cout << "1. Default Program Showcase Menu:\n";
+  std::cout << "   - Demonstrates various features and functionalities of the program.\n";
+  std::cout << "   - Includes showcases for particle class hierarchy, particle attributes, decay product functionality, four-momentum, and particle catalogue.\n";
+  std::cout << "2. Custom Usage Menu:\n";
+  std::cout << "   - Allows you to create and manage your own particle catalogue.\n";
+  std::cout << "   - Provides options to add particles, remove particles, display the catalogue, and retrieve sub-catalogues based on particle types.\n";
+  std::cout << "   - You can navigate through sub-catalogues to perform operations on specific particle types.\n";
+  std::cout << "\nWhile navigating the menus, follow the on-screen prompts and enter the corresponding number to select an option.\n";
+
 }
 // Function to display the add particles submenu
 void display_add_particles_menu()
@@ -269,7 +282,7 @@ void display_operations_menu()
   std::cout << "    5. Back to Main Menu\n";
 }
 
-// Getting particle info from user
+// Functions to get particle info from user
 void get_label(std::string &label)
 {
   std::cout << "Enter label (string): ";
@@ -354,7 +367,6 @@ void get_gluon_details(std::vector<Colour> &colour_charges)
 }
 void get_electron_details(std::vector<double> &energy_deposited_in_layers, double energy)
 {
-  // Clear the vector and prepare to input new values
   energy_deposited_in_layers.clear();
   std::cout << "Energy Deposited in layers:\n";
   std::cout << "1. Enter energy levels manually\n";
@@ -429,6 +441,9 @@ void get_w_details(int &charge)
     break;
   }
 }
+
+// Functions to get the decay type choice from the user. More decay types are possible,
+// these are the ones listed in the project description for examples
 void get_tau_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products, DecayType &decay_type, bool is_anti)
 {
   std::cout << "Choose Tau Decay Products\n";
@@ -653,6 +668,7 @@ void get_w_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products
   }
 }
 
+// Function to handle printing information by type or exact type
 void print_information_by_type(ParticleCatalogue<Particle> &user_catalogue, bool exact)
 {
   std::string particle_type_string = input_particle_type();
@@ -880,6 +896,7 @@ void print_information_by_type(ParticleCatalogue<Particle> &user_catalogue, bool
   }
 }
 
+// Menu for adding a particle
 void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
 {
   int choice;
@@ -1117,6 +1134,7 @@ void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
   }
 }
 
+// Menu for removing a particle
 void remove_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
 {
   int choice;
@@ -1271,6 +1289,7 @@ void remove_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogu
   }
 }
 
+// Function to handle user input viewing operations on particle catalogue
 void view_catalogue_menu_navigation(ParticleCatalogue<Particle> &user_catalogue, bool sub_catalogue)
 {
   int choice;
@@ -1457,6 +1476,7 @@ void view_catalogue_menu_navigation(ParticleCatalogue<Particle> &user_catalogue,
   }
 }
 
+// Function to return a catalogue of the same type, but filled with a sub type
 ParticleCatalogue<Particle> get_sub_catalogue(ParticleCatalogue<Particle> &user_catalogue)
 {
   clear_screen();
@@ -1550,6 +1570,7 @@ ParticleCatalogue<Particle> get_sub_catalogue(ParticleCatalogue<Particle> &user_
   }
 }
 
+// Function to handle user input for custom usage menu
 void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
 {
   while (true)
@@ -1620,6 +1641,7 @@ void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
     }
   }
 }
+
 // Function to display program showcase options
 void program_showcase_menu_navigation()
 {
@@ -1676,6 +1698,7 @@ void program_showcase_menu_navigation()
     display_main_menu();
   }
 }
+
 // Function to handle user input for main menu
 void main_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
 {
@@ -1696,6 +1719,7 @@ void main_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
       break;
     case 3:
       display_help();
+      wait_for_enter("\n Hit Enter to go back to the main menu:");
       break;
     case 4:
       std::cout << "Exiting the program\n";

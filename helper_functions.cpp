@@ -250,7 +250,6 @@ std::vector<double> find_momentum_of_products_three_body(double product1_rest_ma
   double p3x = 0.0;
   double p3y = 0.0;
 
-  // Select the momentum of the first particle
   double extra_energy = decay_particle_rest_mass - product1_rest_mass - product2_rest_mass - product3_rest_mass;
   double E1 = product1_rest_mass + extra_energy / 3;
   p1x = std::sqrt(E1 * E1 - product1_rest_mass * product1_rest_mass);

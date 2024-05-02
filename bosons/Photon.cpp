@@ -1,7 +1,4 @@
 #include "Photon.h"
-#include <iostream>
-#include <utility>   // For std::move
-
 
 // Constructor without label with validity check
 Photon::Photon(std::unique_ptr<FourMomentum> four_momentum)

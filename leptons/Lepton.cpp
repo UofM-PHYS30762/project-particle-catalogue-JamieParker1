@@ -1,9 +1,4 @@
-// Lepton.cpp
 #include "Lepton.h"
-#include "../FourMomentum.h" 
-#include <iostream>  // For std::cout
-#include <stdexcept> // For std::invalid_argument
-#include <iomanip>
 
 // Default constructor
 Lepton::Lepton(int lepton_number) : Particle((lepton_number == 1) ? "lepton" : "antilepton", (lepton_number == 1) ? "General lepton" : "General antilepton", (lepton_number == 1) ? -1 : 1, 0.5, 1, std::vector<DecayType>{DecayType::None}), lepton_number(lepton_number) {}

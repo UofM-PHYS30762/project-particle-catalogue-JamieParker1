@@ -2,10 +2,16 @@
 #define TAU_H
 
 #include "Lepton.h"
-#include "../Particle.h"
 #include "../FourMomentum.h"
+
 #include <memory>
 #include <string>
+#include <iostream>
+#include <utility>
+#include <numeric>
+#include <cmath>
+#include <vector>
+#include <iomanip>
 
 
 // Tau class

@@ -1,5 +1,4 @@
 #include "Muon.h"
-#include <iostream> 
 
 // Constructor for Muon without label
 Muon::Muon(std::unique_ptr<FourMomentum> four_momentum, bool is_isolated, int lepton_number)

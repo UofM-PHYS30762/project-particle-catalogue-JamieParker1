@@ -1,6 +1,4 @@
 #include "Z.h"
-#include "../helper_functions.h"
-#include <utility>   // For std::move
 
 // Constructor without label 
 Z::Z(std::unique_ptr<FourMomentum> four_momentum)

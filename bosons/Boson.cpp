@@ -1,9 +1,5 @@
 // Boson.cpp
 #include "Boson.h"
-#include "../FourMomentum.h" 
-#include <iostream>  // For std::cout
-#include <stdexcept> // For std::invalid_argument
-#include <iomanip>
 
 // Default constructor
 Boson::Boson() : Particle("boson", "General Boson", 0, 0, 0,  std::vector<DecayType>{DecayType::None}) {}
@@ -40,7 +36,7 @@ Boson &Boson::operator=(const Boson &other)
 {
   if(this != &other)
   {
-    Particle::operator=(other); // Call the base class copy assignment operator
+    Particle::operator=(other); 
   }
   return *this;
 }
@@ -50,7 +46,7 @@ Boson &Boson::operator=(Boson &&other) noexcept
 {
   if(this != &other)
   {
-    Particle::operator=(std::move(other)); // Call the base class move assignment operator
+    Particle::operator=(std::move(other)); 
   }
   return *this;
 }

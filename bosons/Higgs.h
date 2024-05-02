@@ -3,8 +3,12 @@
 
 #include "Boson.h"
 #include "../FourMomentum.h"
+#include "../helper_functions.h"
 
-// Electron class 
+#include <utility> 
+#include <iomanip>
+
+// Higgs class 
 class Higgs : public Boson
 {
 public:

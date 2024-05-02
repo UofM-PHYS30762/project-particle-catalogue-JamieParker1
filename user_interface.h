@@ -31,10 +31,14 @@
 #include <variant>
 #include <stack>
 
+// Gets a valid number from user
 double get_valid_number(const std::string &prompt, double minVal = -std::numeric_limits<double>::infinity(), double maxVal = std::numeric_limits<double>::infinity());
+// Function to get integer input within a given range
 int get_integer_input(const std::string &prompt, int min_value, int max_value);
 
+// Gets a particle type from the user
 std::string input_particle_type();
+// Gets a specific particle type from the user
 std::string input_specific_particle_type();
 
 // Function to display the main menu
@@ -52,34 +56,38 @@ void display_add_particles_menu();
 // Function to display the operations submenu
 void display_operations_menu();
 
+// Functions to get particle info from user
 void get_momentum_values(double &px, double &py, double &pz);
 void get_quark_details(Colour &colour_charge, bool is_anti);
 void get_electron_details(std::vector<double> &energy_deposited_in_layers, double energy);
 void get_neutrino_details(std::string &flavour, bool &has_interacted);
 void get_w_details(int &charge);
+
+// Functions to get the decay type choice from the user. More decay types are possible,
+// these are the ones listed in the project description for examples
 void get_tau_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products, DecayType &decay_type, bool is_anti);
 void get_higgs_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products, DecayType &decay_type);
 void get_z_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products, DecayType &decay_type);
 void get_w_decay_products(std::vector<std::unique_ptr<Particle>> &decay_products, DecayType &decay_type, int charge);
 
-
-
-// Function to get sub catalogue
-//void get_sub_catalogue_menu(ParticleCatalogue<Particle>& user_catalogue, int sub_num);
-ParticleCatalogue<Particle> get_sub_catalogue(ParticleCatalogue<Particle>& user_catalogue);
-
 // Function to handle printing information by type or exact type
 void print_information_by_type(ParticleCatalogue<Particle> &user_catalogue, bool exact);
+
+// Function to return a catalogue of the same type, but filled with a sub type
+ParticleCatalogue<Particle> get_sub_catalogue(ParticleCatalogue<Particle>& user_catalogue);
+
+
 
 // Menu for adding a particle
 void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue);
 
+// Menu for removing a particle
+void remove_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue);
+
 // Function to handle user input viewing operations on particle catalogue
 void view_catalogue_menu_navigation(ParticleCatalogue<Particle> &user_catalogue, bool sub_catalogue = false);
-// Overloaded functions
 
 // Function to handle user input for custom usage menu
-//void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue,  int sub_num = 0);
 void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue);
 
 // Function to display program showcase options

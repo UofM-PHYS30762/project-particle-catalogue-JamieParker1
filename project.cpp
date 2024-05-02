@@ -22,11 +22,8 @@
 #include "quarks/QuarkTemplate.h"
 #include "quarks/IndividualQuarks.h"
 
-#include <iostream>
-#include <vector>
-#include <algorithm>
 #include <sstream>
-#include <limits>
+
 
 int main()
 {

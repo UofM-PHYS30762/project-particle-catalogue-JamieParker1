@@ -1,6 +1,4 @@
 #include "Neutrino.h"
-#include <iostream>
-#include <iomanip>
 
 // Constructor without label
 Neutrino::Neutrino(std::unique_ptr<FourMomentum> four_momentum, std::string flavour, bool has_interacted, int lepton_number)

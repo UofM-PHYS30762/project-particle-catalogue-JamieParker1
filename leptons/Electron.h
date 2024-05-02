@@ -3,8 +3,14 @@
 
 #include "Lepton.h"
 #include "../FourMomentum.h"
+
 #include <vector>
 #include <string>
+#include <iostream>
+#include <utility>   
+#include <numeric>   
+#include <stdexcept> 
+#include <iomanip>
  
 // Electron class 
 class Electron : public Lepton
