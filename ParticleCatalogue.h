@@ -103,9 +103,22 @@ public:
     return sub_container;
   }
 
+  template <typename SubType>
+  ParticleCatalogue<SubType> get_sub_container() const
+  {
+    ParticleCatalogue<SubType> sub_container;
+    for (const auto &particle : particles)
+    {
+      if (const SubType *casted = dynamic_cast<const SubType *>(particle))
+      {
+        sub_container.add_particle(const_cast<SubType *>(casted));
+      }
+    }
+    return sub_container;
+  }
 
   template <typename SubType>
-  ParticleCatalogue<T> get_sub_container() const
+  ParticleCatalogue<T> get_sub_container_of_same_type() const
   {
     ParticleCatalogue<T> sub_container;
     for (const auto &particle : particles)
@@ -152,6 +165,16 @@ public:
     return result;
   }
 
+  std::vector<std::string> get_all_labels() const
+  {
+    std::vector<std::string> labels;
+    for (const auto &particle : particles)
+    {
+      labels.push_back(particle->get_label());
+    }
+    return labels;
+  }
+
   // Overloaded functions to remove particles via label, pointer, or index
   void remove_particle(const std::string &label)
   {
@@ -177,7 +200,27 @@ public:
       particles.erase(particles.begin() + index);
     }
   }
-
+  void clear_all_particles()
+  {
+    for (auto &particle : particles)
+    {
+      delete particle;
+    }
+    particles.clear();
+    unique_particles.clear();
+  }
+  template<typename SubType>
+  void remove_particles_by_type() {
+      auto it = std::remove_if(particles.begin(), particles.end(), [](const Particle* particle) {
+          return dynamic_cast<const SubType*>(particle) != nullptr;
+      });
+      for (auto ptr = it; ptr != particles.end(); ++ptr) {
+          unique_particles.erase(*ptr);
+          delete *ptr;
+      }
+      particles.erase(it, particles.end());
+  }
+  
   // Function to sort the catalogue via a variable
   template <typename Compare>
   void sort_particles_by_property(Compare compare, bool reverse = false)

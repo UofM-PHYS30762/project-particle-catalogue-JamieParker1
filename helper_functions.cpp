@@ -91,7 +91,7 @@ bool is_colour_neutral(Colour colour1, Colour colour2, Colour colour3)
   int blue_count = 0;
   int green_count = 0;
 
-  if (!(colour3==Colour::None))
+  if (!(colour3 == Colour::None))
   {
     for (Colour &colour : std::vector<Colour>{colour1, colour2, colour3})
     {
@@ -125,7 +125,8 @@ bool is_colour_neutral(Colour colour1, Colour colour2, Colour colour3)
     {
       return true;
     }
-    else return false;
+    else
+      return false;
   }
   else
   {
@@ -133,7 +134,8 @@ bool is_colour_neutral(Colour colour1, Colour colour2, Colour colour3)
     {
       return true;
     }
-    else return false;
+    else
+      return false;
   }
 }
 bool is_colour_neutral(std::vector<Colour> colour_charges)
@@ -176,7 +178,8 @@ bool is_colour_neutral(std::vector<Colour> colour_charges)
     {
       return true;
     }
-    else return false;
+    else
+      return false;
   }
   else
   {
@@ -184,10 +187,10 @@ bool is_colour_neutral(std::vector<Colour> colour_charges)
     {
       return true;
     }
-    else return false;
+    else
+      return false;
   }
 }
-
 
 bool contains_decay_type(const std::vector<DecayType> &decay_types, DecayType type_to_find)
 {
@@ -346,12 +349,17 @@ void wait_for_enter(const std::string &prompt)
 void fill_leptons(ParticleCatalogue<Particle> &catalogue)
 {
   Tau *tau = new Tau();
+  tau->set_label("general tau");
   Electron *electron = new Electron();
+  electron->set_label("general electron");
   Muon *muon = new Muon();
+  muon->set_label("general muon");
   Neutrino *tau_neutrino = new Neutrino("tau");
+  tau_neutrino->set_label("general tau neutrino");
   Neutrino *electron_neutrino = new Neutrino("electron");
+  electron_neutrino->set_label("general electron neutrino");
   Neutrino *muon_neutrino = new Neutrino("muon");
-
+  muon_neutrino->set_label("general muon neutrino");
   catalogue.add_particle(tau);
   catalogue.add_particle(electron);
   catalogue.add_particle(muon);
@@ -363,12 +371,17 @@ void fill_leptons(ParticleCatalogue<Particle> &catalogue)
 void fill_anti_leptons(ParticleCatalogue<Particle> &catalogue)
 {
   Tau *anti_tau = new Tau(-1);
+  anti_tau->set_label("general anti-tau");
   Electron *anti_electron = new Electron(-1);
+  anti_electron->set_label("general anti-electron");
   Muon *anti_muon = new Muon(-1);
+  anti_muon->set_label("general anti-muon");
   Neutrino *anti_tau_neutrino = new Neutrino("tau", -1);
+  anti_tau_neutrino->set_label("general anti-tau neutrino");
   Neutrino *anti_electron_neutrino = new Neutrino("electron", -1);
+  anti_electron_neutrino->set_label("general anti-electron neutrino");
   Neutrino *anti_muon_neutrino = new Neutrino("muon", -1);
-
+  anti_muon_neutrino->set_label("general anti-muon neutrino");
   catalogue.add_particle(anti_tau);
   catalogue.add_particle(anti_electron);
   catalogue.add_particle(anti_muon);
@@ -380,12 +393,17 @@ void fill_anti_leptons(ParticleCatalogue<Particle> &catalogue)
 void fill_bosons(ParticleCatalogue<Particle> &catalogue)
 {
   Photon *photon = new Photon();
+  photon->set_label("general photon");
   Gluon *gluon = new Gluon();
+  gluon->set_label("general gluon");
   Z *z = new Z();
+  z->set_label("general z");
   W *w_plus = new W();
+  w_plus->set_label("general w");
   W *w_minus = new W(-1);
+  w_minus->set_label("general w");
   Higgs *higgs = new Higgs();
-
+  higgs->set_label("general higgs");
   catalogue.add_particle(photon);
   catalogue.add_particle(gluon);
   catalogue.add_particle(z);
@@ -397,12 +415,17 @@ void fill_bosons(ParticleCatalogue<Particle> &catalogue)
 void fill_quarks(ParticleCatalogue<Particle> &catalogue)
 {
   Up *up = new Up();
+  up->set_label("general up");
   Down *down = new Down();
+  down->set_label("general down");
   Bottom *bottom = new Bottom();
+  bottom->set_label("general bottom");
   Charm *charm = new Charm();
+  charm->set_label("general charm");
   Top *top = new Top();
+  top->set_label("general top");
   Strange *strange = new Strange();
-
+  strange->set_label("general strange");
   catalogue.add_particle(up);
   catalogue.add_particle(down);
   catalogue.add_particle(bottom);
@@ -414,12 +437,17 @@ void fill_quarks(ParticleCatalogue<Particle> &catalogue)
 void fill_anti_quarks(ParticleCatalogue<Particle> &catalogue)
 {
   Up *anti_up = new Up(true);
+  anti_up->set_label("general anti-up");
   Down *anti_down = new Down(true);
+  anti_down->set_label("general anti-down");
   Bottom *anti_bottom = new Bottom(true);
+  anti_bottom->set_label("general anti-bottom");
   Charm *anti_charm = new Charm(true);
+  anti_charm->set_label("general anti-charm");
   Top *anti_top = new Top(true);
+  anti_top->set_label("general anti-top");
   Strange *anti_strange = new Strange(true);
-
+  anti_strange->set_label("general anti-strange");
   catalogue.add_particle(anti_up);
   catalogue.add_particle(anti_down);
   catalogue.add_particle(anti_bottom);
@@ -450,77 +478,33 @@ void fill_catalogue(ParticleCatalogue<Particle> &catalogue)
 }
 
 // Sort catalogue by values
-
-
 void sort_by_rest_mass(ParticleCatalogue<Particle> &catalogue)
 {
-  catalogue.template sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_rest_mass() && p2->get_rest_mass()) {
-        return p1->get_rest_mass() < p2->get_rest_mass();
-    }
-    return false; });
+  catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
+                                       { return p1->get_rest_mass() < p2->get_rest_mass(); });
 }
-
 void sort_by_charge(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_charge() && p2->get_charge()) {
-        return p1->get_charge() < p2->get_charge();
-    }
-    return false; });
+                                       { return p1->get_charge() < p2->get_charge(); });
 }
-
 void sort_by_spin(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_spin() && p2->get_spin()) {
-        return p1->get_spin() < p2->get_spin();
-    }
-    return false; });
+                                       { return p1->get_spin() < p2->get_spin(); });
 }
-
 void sort_by_energy(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_four_momentum().get_energy() && p2->get_four_momentum().get_energy()) {
-        return p1->get_four_momentum().get_energy() < p2->get_four_momentum().get_energy();
-    }
-    return false; });
+                                       { return p1->get_four_momentum().get_energy() < p2->get_four_momentum().get_energy(); });
 }
-
 void sort_by_momentum(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_four_momentum().get_P_magnitude() && p2->get_four_momentum().get_P_magnitude()) {
-        return p1->get_four_momentum().get_P_magnitude() < p2->get_four_momentum().get_P_magnitude();
-    }
-    return false; });
+                                       { return p1->get_four_momentum().get_P_magnitude() < p2->get_four_momentum().get_P_magnitude(); });
 }
-
 void sort_by_velocity(ParticleCatalogue<Particle> &catalogue)
 {
   catalogue.sort_particles_by_property([](const Particle *p1, const Particle *p2)
-                                       {
-    if (p1->get_four_momentum().get_velocity_magnitude() && p2->get_four_momentum().get_velocity_magnitude()) {
-        return p1->get_four_momentum().get_velocity_magnitude() < p2->get_four_momentum().get_velocity_magnitude();
-    }
-    return false; });
+                                       { return p1->get_four_momentum().get_velocity_magnitude() < p2->get_four_momentum().get_velocity_magnitude(); });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

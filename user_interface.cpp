@@ -212,27 +212,28 @@ void display_custom_usage_menu(int sub_num)
     }
 
     std::string header = indent + "==== Particle ";
-    std::string two = indent + "2. Display ";
+    std::string three = indent + "3. Display ";
     for (int i = 0; i < j; i++)
     {
       header += "Sub-";
-      two += "Sub-";
-    }
-    header += "Catalogue Menu ====\n";
-    two += "Catalogue\n";
-
-    std::string three = indent + "3. Get ";
-    for (int i = 0; i < j + 1; i++)
-    {
       three += "Sub-";
     }
-    three += "Catalogue by particle type\n";
+    header += "Catalogue Menu ====\n";
+    three += "Catalogue\n";
+
+    std::string four = indent + "4. Get ";
+    for (int i = 0; i < j + 1; i++)
+    {
+      four += "Sub-";
+    }
+    four += "Catalogue by particle type\n";
 
     std::cout << header;
     std::cout << indent + "1. Add Particles\n";
-    std::cout << two;
+    std::cout << indent + "2. Remove Particles\n";
     std::cout << three;
-    std::cout << indent + "4. Back\n";
+    std::cout << four;
+    std::cout << indent + "5. Back\n";
 
     std::cout << "\n"; // Add a blank line between each output
   }
@@ -291,11 +292,14 @@ void get_bool(bool &value, std::string prompt)
 }
 void get_quark_details(Colour &colour_charge, bool is_anti)
 {
-  std::cout << is_anti << std::endl;
-  int choice = get_integer_input("Enter colour charge (0 for Red, 1 for Green, 2 for Blue)[Will be anti-colour for anti-quark]: ", 0, 2);
+  std::cout << "Colour Charge:\n";
+  std::cout << "1. Red\n";
+  std::cout << "2. Green\n";
+  std::cout << "3. Blue\n";
+  int choice = get_integer_input("Enter choice[Will be anti-colour for anti-quark]: ", 1, 3);
   switch (choice)
   {
-  case 0:
+  case 1:
     if (is_anti)
     {
       colour_charge = Colour::AntiRed;
@@ -305,7 +309,7 @@ void get_quark_details(Colour &colour_charge, bool is_anti)
       colour_charge = Colour::Red;
     }
     break;
-  case 1:
+  case 2:
     if (is_anti)
     {
       colour_charge = Colour::AntiGreen;
@@ -315,7 +319,7 @@ void get_quark_details(Colour &colour_charge, bool is_anti)
       colour_charge = Colour::Green;
     }
     break;
-  case 2:
+  case 3:
     if (is_anti)
     {
       colour_charge = Colour::AntiBlue;
@@ -330,16 +334,20 @@ void get_quark_details(Colour &colour_charge, bool is_anti)
 void get_gluon_details(std::vector<Colour> &colour_charges)
 {
   colour_charges.clear();
-  int choice = get_integer_input("Enter colour charge (0 for Red, 1 for Green, 2 for Blue)[Will be colour anti-colour pair]: ", 0, 2);
+  std::cout << "Colour Charge:\n";
+  std::cout << "1. Red\n";
+  std::cout << "2. Green\n";
+  std::cout << "3. Blue\n";
+  int choice = get_integer_input("Enter choice[Will be colour anti-colour pair]: ", 1, 3);
   switch (choice)
   {
-  case 0:
-    colour_charges = {Colour::Red, Colour::AntiRed};
-    break;
   case 1:
     colour_charges = {Colour::Red, Colour::AntiRed};
     break;
   case 2:
+    colour_charges = {Colour::Red, Colour::AntiRed};
+    break;
+  case 3:
     colour_charges = {Colour::Red, Colour::AntiRed};
     break;
   }
@@ -348,6 +356,7 @@ void get_electron_details(std::vector<double> &energy_deposited_in_layers, doubl
 {
   // Clear the vector and prepare to input new values
   energy_deposited_in_layers.clear();
+  std::cout << "Energy Deposited in layers:\n";
   std::cout << "1. Enter energy levels manually\n";
   std::cout << "2. Autoset energy levels to match energy of electron\n";
   int choice = get_integer_input("Enter choice (1 or 2): ", 1, 2);
@@ -467,15 +476,15 @@ void get_tau_decay_products(std::vector<std::unique_ptr<Particle>> &decay_produc
   {
     if (is_anti)
     {
-      decay_products.push_back(std::make_unique<Up>(true));
-      decay_products.push_back(std::make_unique<Down>());
+      decay_products.push_back(std::make_unique<Up>());
+      decay_products.push_back(std::make_unique<Down>(true));
       decay_products.push_back(std::make_unique<Neutrino>("tau", -1));
       decay_type = DecayType::Weak;
     }
     else
     {
-      decay_products.push_back(std::make_unique<Up>());
-      decay_products.push_back(std::make_unique<Down>(true));
+      decay_products.push_back(std::make_unique<Up>(true));
+      decay_products.push_back(std::make_unique<Down>());
       decay_products.push_back(std::make_unique<Neutrino>("tau"));
       decay_type = DecayType::Weak;
     }
@@ -885,7 +894,7 @@ void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
     std::cout << "5. Add All Anti-Leptons with default properties\n";
     std::cout << "6. Add All Anti-Quarks with default properties\n";
     std::cout << "7. Add Specific Particle\n";
-    std::cout << "8. Back to Main Menu\n";
+    std::cout << "8. Back to Particle Catlogue Menu\n";
 
     choice = get_integer_input("Enter your choice: ", 1, 8);
 
@@ -928,119 +937,163 @@ void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
         std::string label;
         std::vector<std::unique_ptr<Particle>> decay_products;
         DecayType decay_type;
-        get_momentum_values(px, py, pz);
-        
+        clear_screen();
+        std::cout << "Making " << particle_type_string << std::endl;
         get_label(label);
+        std::cout << std::endl;
+        get_momentum_values(px, py, pz);
         std::unique_ptr<FourMomentum> four_momentum = std::make_unique<FourMomentum>(mass, px, py, pz, true);
 
         if (particle_type_string == "up" || particle_type_string == "charm" || particle_type_string == "top" || particle_type_string == "down" || particle_type_string == "strange" || particle_type_string == "bottom")
         {
+          std::cout << std::endl;
           get_is_anti(is_anti);
           Colour colour_charge;
+          std::cout << std::endl;
           get_quark_details(colour_charge, is_anti);
 
           if (particle_type_string == "up")
           {
             Up *quark_to_add = new Up(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
           if (particle_type_string == "charm")
           {
             Charm *quark_to_add = new Charm(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
           if (particle_type_string == "top")
           {
             Top *quark_to_add = new Top(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
           if (particle_type_string == "down")
           {
             Down *quark_to_add = new Down(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
           if (particle_type_string == "strange")
           {
             Strange *quark_to_add = new Strange(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
           if (particle_type_string == "bottom")
           {
             Bottom *quark_to_add = new Bottom(label, is_anti, colour_charge, std::move(four_momentum));
+            quark_to_add->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(quark_to_add);
           }
         }
         else if (particle_type_string == "electron" || particle_type_string == "muon" || particle_type_string == "tau" || particle_type_string == "neutrino")
         {
+          std::cout << std::endl;
           get_is_anti(is_anti);
           int lepton_number = (is_anti) ? -1 : 1;
           if (particle_type_string == "electron")
           {
             std::vector<double> energy_deposited_in_layers;
+            std::cout << std::endl;
             get_electron_details(energy_deposited_in_layers, four_momentum->get_energy());
             Electron *electron = new Electron(label, std::move(four_momentum), energy_deposited_in_layers, lepton_number);
+            electron->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(electron);
           }
           else if (particle_type_string == "muon")
           {
             bool is_isolated;
+            std::cout << std::endl;
             get_bool(is_isolated, "Is the Muon isolated? (0 for no, 1 for yes):");
             Muon *muon = new Muon(label, std::move(four_momentum), is_isolated, lepton_number);
+            muon->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(muon);
           }
           else if (particle_type_string == "tau")
           {
+            std::cout << std::endl;
             get_tau_decay_products(decay_products, decay_type, is_anti);
             Tau *tau = new Tau(lepton_number);
             tau->set_label(label);
             tau->set_four_momentum(std::move(four_momentum));
             tau->auto_set_decay_products(std::move(decay_products), decay_type);
+            tau->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(tau);
           }
           else if (particle_type_string == "neutrino")
           {
             std::string flavour;
             bool has_interacted;
+            std::cout << std::endl;
             get_neutrino_details(flavour, has_interacted);
             mass = Mass::string_to_mass(flavour + "_" + "neutrino");
             std::unique_ptr<FourMomentum> four_momentum = std::make_unique<FourMomentum>(mass, px, py, pz, true);
             Neutrino *neutrino = new Neutrino(label, std::move(four_momentum), flavour, has_interacted, lepton_number);
+            neutrino->print();
+            wait_for_enter("\nHit Enter To Continue:");
             user_catalogue.add_particle(neutrino);
           }
         }
         else if (particle_type_string == "gluon")
         {
           std::vector<Colour> colour_charges;
+          std::cout << std::endl;
           get_gluon_details(colour_charges);
           Gluon *gluon = new Gluon(label, std::move(four_momentum), colour_charges);
+          gluon->print();
+          wait_for_enter("\nHit Enter To Continue:");
           user_catalogue.add_particle(gluon);
         }
         else if (particle_type_string == "photon")
         {
           Photon *photon = new Photon(label, std::move(four_momentum));
+          photon->print();
+          wait_for_enter("\nHit Enter To Continue:");
           user_catalogue.add_particle(photon);
         }
         else if (particle_type_string == "z")
         {
+          std::cout << std::endl;
           get_z_decay_products(decay_products, decay_type);
           Z *z = new Z(label, std::move(four_momentum));
           z->auto_set_decay_products(std::move(decay_products), decay_type);
+          z->print();
+          wait_for_enter("\nHit Enter To Continue:");
           user_catalogue.add_particle(z);
         }
         else if (particle_type_string == "w")
         {
           int charge;
+          std::cout << std::endl;
           get_w_details(charge);
+          std::cout << std::endl;
           get_w_decay_products(decay_products, decay_type, charge);
           W *w = new W(label, charge, std::move(four_momentum));
           w->auto_set_decay_products(std::move(decay_products), decay_type);
+          w->print();
+          wait_for_enter("\nHit Enter To Continue:");
           user_catalogue.add_particle(w);
         }
         else if (particle_type_string == "higgs")
         {
+          std::cout << std::endl;
           get_higgs_decay_products(decay_products, decay_type);
           Higgs *higgs = new Higgs(label, std::move(four_momentum));
           higgs->auto_set_decay_products(std::move(decay_products), decay_type);
+          higgs->print();
+          wait_for_enter("\nHit Enter To Continue:");
           user_catalogue.add_particle(higgs);
         }
         else
@@ -1054,6 +1107,160 @@ void add_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
       }
     }
     case 8: // Back to Main Menu
+      return;
+    default:
+      std::cout << "Invalid choice. Please try again.\n";
+    }
+
+    wait_for_enter("\nPress Enter to continue...");
+    clear_screen();
+  }
+}
+
+void remove_particles_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
+{
+  int choice;
+  while (true)
+  {
+    clear_screen();
+    std::cout << "==== Remove Particles Menu ====\n";
+    std::cout << "1. Remove by Label\n";
+    std::cout << "2. Remove by Type\n";
+    std::cout << "3. Remove by Index\n";
+    std::cout << "4. Remove All Particles\n";
+    std::cout << "5. Back to Main Menu\n";
+
+    choice = get_integer_input("Enter your choice: ", 1, 5);
+
+    switch (choice)
+    {
+    case 1: // Remove by Label
+    {
+      // Prompt the user to enter the label
+      std::string label;
+      std::cout << std::endl;
+      std::cout << "Enter the label: ";
+      std::getline(std::cin, label);
+      user_catalogue.remove_particle(label);
+      std::cout << "Particle(s) with label '" << label << "' removed from the catalogue.\n";
+      break;
+    }
+    case 2: // Remove by Type
+    {
+      std::string particle_type_string = input_particle_type();
+      if (!particle_type_string.empty())
+      {
+        if (particle_type_string == "up")
+        {
+          user_catalogue.remove_particles_by_type<Up>();
+        }
+        else if (particle_type_string == "charm")
+        {
+          user_catalogue.remove_particles_by_type<Charm>();
+        }
+        else if (particle_type_string == "top")
+        {
+          user_catalogue.remove_particles_by_type<Top>();
+        }
+
+        else if (particle_type_string == "down")
+        {
+          user_catalogue.remove_particles_by_type<Down>();
+        }
+        else if (particle_type_string == "strange")
+        {
+          user_catalogue.remove_particles_by_type<Strange>();
+        }
+        else if (particle_type_string == "bottom")
+        {
+          user_catalogue.remove_particles_by_type<Bottom>();
+        }
+        else if (particle_type_string == "electron")
+        {
+          user_catalogue.remove_particles_by_type<Electron>();
+        }
+        else if (particle_type_string == "muon")
+        {
+          user_catalogue.remove_particles_by_type<Muon>();
+        }
+        else if (particle_type_string == "tau")
+        {
+          user_catalogue.remove_particles_by_type<Tau>();
+        }
+        else if (particle_type_string == "neutrino")
+        {
+          user_catalogue.remove_particles_by_type<Neutrino>();
+        }
+        else if (particle_type_string == "gluon")
+        {
+          user_catalogue.remove_particles_by_type<Gluon>();
+        }
+        else if (particle_type_string == "photon")
+        {
+          user_catalogue.remove_particles_by_type<Photon>();
+        }
+        else if (particle_type_string == "z")
+        {
+          user_catalogue.remove_particles_by_type<Z>();
+        }
+        else if (particle_type_string == "w")
+        {
+          user_catalogue.remove_particles_by_type<W>();
+        }
+        else if (particle_type_string == "higgs")
+        {
+          user_catalogue.remove_particles_by_type<Higgs>();
+        }
+        else if (particle_type_string == "lepton")
+        {
+          user_catalogue.remove_particles_by_type<Lepton>();
+        }
+        else if (particle_type_string == "particle")
+        {
+          user_catalogue.remove_particles_by_type<Particle>();
+        }
+        else if (particle_type_string == "boson")
+        {
+          user_catalogue.remove_particles_by_type<Boson>();
+        }
+        else if (particle_type_string == "quark")
+        {
+          user_catalogue.remove_particles_by_type<Quark>();
+        }
+        else
+        {
+          throw std::invalid_argument("Error: Unknown particle - " + particle_type_string);
+        }
+      }
+      else
+      {
+        throw std::runtime_error("Error: Particle Type not found");
+      }
+      std::cout << "All particles of type '" << particle_type_string << "' removed from the catalogue.\n";
+      break;
+    }
+    case 3: // Remove by Index
+    {
+      size_t index = static_cast<size_t>(get_integer_input("Enter the index of the particle to remove: ", 0, user_catalogue.get_number_of_particles() - 1));
+      user_catalogue.remove_particle(index);
+      std::cout << "Particle at index " << index << " removed from the catalogue.\n";
+      break;
+    }
+    case 4: // Remove All Particles
+    {
+      bool sure = get_integer_input("\nAre you sure?\n0. Cancel\n1. Continue\nEnter Choice:", 0, 1);
+      if (sure)
+      {
+        user_catalogue.clear_all_particles();
+        std::cout << "\nAll particles have been removed from the catalogue.\n";
+      }
+      else
+      {
+        std::cout << "\nOperation cancelled.";
+      }
+      break;
+    }
+    case 5: // Back to Main Menu
       return;
     default:
       std::cout << "Invalid choice. Please try again.\n";
@@ -1095,111 +1302,156 @@ void view_catalogue_menu_navigation(ParticleCatalogue<Particle> &user_catalogue,
     }
 
     choice = get_integer_input("Enter your choice: ", 1, 9);
-
-    switch (choice)
+    size_t total_particles = user_catalogue.get_number_of_particles();
+    if (total_particles == 0 && choice != 9)
     {
-    case 1: // Get Total Number of Particles
-    {
-      size_t total_particles = user_catalogue.get_number_of_particles();
-      std::cout << "Total number of particles: " << total_particles << "\n";
-      break;
+      std::cout << "Catalogue is empty\n";
     }
-    case 2: // Get Particle Count by Type
+    else
     {
-      std::map<std::string, int> particle_counts = user_catalogue.get_particle_count_by_type();
-      std::cout << "Particle counts by type:\n";
-      for (const auto &count : particle_counts)
+      switch (choice)
       {
-        std::cout << count.first << ": " << count.second << "\n";
+      case 1: // Get Total Number of Particles
+      {
+        std::cout << std::endl;
+        std::cout << "Total number of particles: " << total_particles << "\n";
+        break;
       }
-      break;
-    }
-    case 3: // Sum Four-Momenta
-    {
-      FourMomentum total_momentum = user_catalogue.sum_four_momenta();
-      std::cout << "Sum of four-momenta:\n"
-                << total_momentum << "\n";
-      break;
-    }
-    case 4: // Print all information
-    {
-      user_catalogue.print_all();
-      break;
-    }
-    case 5: // Print Information by Type
-    {
-      // Prompt the user to enter the particle type
-      print_information_by_type(user_catalogue, false);
-      break;
-    }
-    case 6: // Print Information by Exact Type
-    {
-      // Prompt the user to enter the particle type
-      print_information_by_type(user_catalogue, true);
-      break;
-    }
-    case 7: // Find Particles by Label
-    {
-      // Prompt the user to enter the label
-      std::string label;
-      std::cout << "Enter the particle label: ";
-      std::getline(std::cin, label);
-
-      // Find particles by label
-      std::vector<Particle *> found_particles = user_catalogue.find_particles_by_label(label);
-      std::cout << "Particles with label " << label << ":\n";
-      for (const auto &particle : found_particles)
+      case 2: // Get Particle Count by Type
       {
-        particle->print();
+        std::map<std::string, int> particle_counts = user_catalogue.get_particle_count_by_type();
+        std::cout << std::endl;
+        std::cout << "Particle counts by type:\n";
+        for (const auto &count : particle_counts)
+        {
+          std::cout << count.first << ": " << count.second << "\n";
+        }
+        break;
       }
-      break;
-    }
-    case 8: // Sort Particles by Property
-    {
-      std::cout << "Sort particles by:\n";
-      std::cout << "1. Rest Mass\n";
-      std::cout << "2. Charge\n";
-      std::cout << "3. Spin\n";
-      std::cout << "4. Energy\n";
-      std::cout << "5. Momentum\n";
-      std::cout << "6. Velocity\n";
-
-      int sort_choice = get_integer_input("Enter your choice: ", 1, 6);
-
-      switch (sort_choice)
+      case 3: // Sum Four-Momenta
       {
-      case 1:
-        sort_by_rest_mass(user_catalogue);
+        FourMomentum total_momentum = user_catalogue.sum_four_momenta();
+        std::cout << std::endl;
+        std::cout << "Sum of four-momenta:\n"
+                  << total_momentum << "\n";
         break;
-      case 2:
-        sort_by_charge(user_catalogue);
+      }
+      case 4: // Print all information
+      {
+        user_catalogue.print_all();
         break;
-      case 3:
-        sort_by_spin(user_catalogue);
+      }
+      case 5: // Print Information by Type
+      {
+        // Prompt the user to enter the particle type
+        print_information_by_type(user_catalogue, false);
         break;
-      case 4:
-        sort_by_energy(user_catalogue);
+      }
+      case 6: // Print Information by Exact Type
+      {
+        // Prompt the user to enter the particle type
+        print_information_by_type(user_catalogue, true);
         break;
-      case 5:
-        sort_by_momentum(user_catalogue);
+      }
+      case 7: // Find Particles by Label
+      {
+        std::vector<std::string> labels = user_catalogue.get_all_labels();
+        std::map<std::string, int> label_count;
+        size_t labeled_particles = 0; // To count how many have labels
+
+        // Count each label
+        for (const auto &label : labels)
+        {
+          if (!label.empty())
+          {
+            label_count[label]++;
+            labeled_particles++;
+          }
+        }
+
+        // Print all labels and their counts
+        std::cout << std::endl;
+        std::cout << "Particle with labels:\n";
+        if (labeled_particles != 0)
+        {
+          // Print all labels and their counts
+          for (const auto &pair : label_count)
+          {
+            std::cout << pair.first << " - " << pair.second << std::endl;
+          }
+        }
+        std::cout << "Unlabeled particles: " << total_particles - labeled_particles << std::endl;
+
+        // Prompt the user to enter the label
+        std::string label;
+        std::cout << std::endl;
+        std::cout << "Enter the label: ";
+        std::getline(std::cin, label);
+
+        // Find particles by label
+        std::vector<Particle *> found_particles = user_catalogue.find_particles_by_label(label);
+        std::cout << std::endl;
+        if (found_particles.size() == 0)
+        {
+          std::cout << "No particles with label " << label << ".";
+        }
+        else
+        {
+          std::cout << "Particles with label " << label << ":\n";
+          for (const auto &particle : found_particles)
+          {
+            particle->print();
+          }
+        }
+
         break;
-      case 6:
-        sort_by_velocity(user_catalogue);
+      }
+      case 8: // Sort Particles by Property
+      {
+        std::cout << "Sort particles by:\n";
+        std::cout << "1. Rest Mass\n";
+        std::cout << "2. Charge\n";
+        std::cout << "3. Spin\n";
+        std::cout << "4. Energy\n";
+        std::cout << "5. Momentum\n";
+        std::cout << "6. Velocity\n";
+
+        int sort_choice = get_integer_input("Enter your choice: ", 1, 6);
+
+        switch (sort_choice)
+        {
+        case 1:
+          sort_by_rest_mass(user_catalogue);
+          break;
+        case 2:
+          sort_by_charge(user_catalogue);
+          break;
+        case 3:
+          sort_by_spin(user_catalogue);
+          break;
+        case 4:
+          sort_by_energy(user_catalogue);
+          break;
+        case 5:
+          sort_by_momentum(user_catalogue);
+          break;
+        case 6:
+          sort_by_velocity(user_catalogue);
+          break;
+        default:
+          std::cout << "Invalid choice. Sorting skipped.\n";
+        }
+
+        std::cout << "Sorted particle catalogue:\n";
+        user_catalogue.print_all();
         break;
+      }
+      case 9: // Back to Main Menu
+        return;
       default:
-        std::cout << "Invalid choice. Sorting skipped.\n";
+        std::cout << "Invalid choice. Please try again.\n";
       }
-
-      std::cout << "Sorted particle catalogue:\n";
-      user_catalogue.print_all();
-      break;
     }
-    case 9: // Back to Main Menu
-      return;
-    default:
-      std::cout << "Invalid choice. Please try again.\n";
-    }
-
     wait_for_enter("\nPress Enter to continue:");
     clear_screen();
   }
@@ -1213,79 +1465,79 @@ ParticleCatalogue<Particle> get_sub_catalogue(ParticleCatalogue<Particle> &user_
   {
     if (particle_type_string == "up")
     {
-      return user_catalogue.get_sub_container<Up>();
+      return user_catalogue.get_sub_container_of_same_type<Up>();
     }
     else if (particle_type_string == "charm")
     {
-      return user_catalogue.get_sub_container<Charm>();
+      return user_catalogue.get_sub_container_of_same_type<Charm>();
     }
     else if (particle_type_string == "top")
     {
-      return user_catalogue.get_sub_container<Top>();
+      return user_catalogue.get_sub_container_of_same_type<Top>();
     }
     else if (particle_type_string == "down")
     {
-      return user_catalogue.get_sub_container<Down>();
+      return user_catalogue.get_sub_container_of_same_type<Down>();
     }
     else if (particle_type_string == "strange")
     {
-      return user_catalogue.get_sub_container<Strange>();
+      return user_catalogue.get_sub_container_of_same_type<Strange>();
     }
     else if (particle_type_string == "bottom")
     {
-      return user_catalogue.get_sub_container<Bottom>();
+      return user_catalogue.get_sub_container_of_same_type<Bottom>();
     }
     else if (particle_type_string == "electron")
     {
-      return user_catalogue.get_sub_container<Electron>();
+      return user_catalogue.get_sub_container_of_same_type<Electron>();
     }
     else if (particle_type_string == "muon")
     {
-      return user_catalogue.get_sub_container<Muon>();
+      return user_catalogue.get_sub_container_of_same_type<Muon>();
     }
     else if (particle_type_string == "tau")
     {
-      return user_catalogue.get_sub_container<Tau>();
+      return user_catalogue.get_sub_container_of_same_type<Tau>();
     }
     else if (particle_type_string == "neutrino")
     {
-      return user_catalogue.get_sub_container<Neutrino>();
+      return user_catalogue.get_sub_container_of_same_type<Neutrino>();
     }
     else if (particle_type_string == "gluon")
     {
-      return user_catalogue.get_sub_container<Gluon>();
+      return user_catalogue.get_sub_container_of_same_type<Gluon>();
     }
     else if (particle_type_string == "photon")
     {
-      return user_catalogue.get_sub_container<Photon>();
+      return user_catalogue.get_sub_container_of_same_type<Photon>();
     }
     else if (particle_type_string == "z")
     {
-      return user_catalogue.get_sub_container<Z>();
+      return user_catalogue.get_sub_container_of_same_type<Z>();
     }
     else if (particle_type_string == "w")
     {
-      return user_catalogue.get_sub_container<W>();
+      return user_catalogue.get_sub_container_of_same_type<W>();
     }
     else if (particle_type_string == "higgs")
     {
-      return user_catalogue.get_sub_container<Higgs>();
+      return user_catalogue.get_sub_container_of_same_type<Higgs>();
     }
     else if (particle_type_string == "lepton")
     {
-      return user_catalogue.get_sub_container<Lepton>();
+      return user_catalogue.get_sub_container_of_same_type<Lepton>();
     }
     else if (particle_type_string == "particle")
     {
-      return user_catalogue.get_sub_container<Particle>();
+      return user_catalogue.get_sub_container_of_same_type<Particle>();
     }
     else if (particle_type_string == "boson")
     {
-      return user_catalogue.get_sub_container<Boson>();
+      return user_catalogue.get_sub_container_of_same_type<Boson>();
     }
     else if (particle_type_string == "quark")
     {
-      return user_catalogue.get_sub_container<Quark>();
+      return user_catalogue.get_sub_container_of_same_type<Quark>();
     }
     else
     {
@@ -1310,18 +1562,21 @@ void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
       clear_screen();
       display_main_menu();
       display_custom_usage_menu(sub_num);
-      int choice = get_integer_input("Enter your choice: ", 1, 4);
+      int choice = get_integer_input("Enter your choice: ", 1, 5);
 
       switch (choice)
       {
       case 1: // Add Particles
         add_particles_menu_navigation(*current_catalogue);
         break;
-      case 2: // Display Catalogue
+      case 2: // Remove Particles
+        remove_particles_menu_navigation(*current_catalogue);
+        break;
+      case 3: // Display Catalogue
         clear_screen();
         view_catalogue_menu_navigation(*current_catalogue);
         break;
-      case 3: // Get sub-catalogue
+      case 4: // Get sub-catalogue
         try
         {
           int current_num_of_particle = current_catalogue->get_number_of_particles();
@@ -1351,7 +1606,7 @@ void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
           std::cin.get();
         }
         break;
-      case 4: // Back
+      case 5: // Back
         goto outer_loop;
       default:
         std::cout << "Invalid choice. Please try again.\n";
@@ -1365,7 +1620,6 @@ void custom_usage_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
     }
   }
 }
-
 // Function to display program showcase options
 void program_showcase_menu_navigation()
 {
