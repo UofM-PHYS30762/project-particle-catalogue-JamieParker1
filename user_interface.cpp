@@ -188,7 +188,8 @@ void display_main_menu()
   std::cout << "1. Default Program Showcase Menu\n";
   std::cout << "2. Custom Usage Menu\n";
   std::cout << "3. Help\n";
-  std::cout << "4. Quit\n";
+  std::cout << "4. Leave User Interface To Showcase Specifically What Was Asked For In The Project Slides\n";
+  std::cout << "5. Quit\n";
 }
 // Function to display options to showcase program
 void display_program_showcase_menu()
@@ -1707,7 +1708,7 @@ void main_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
   {
     clear_screen();
     display_main_menu();
-    choice = get_integer_input("Enter your choice: ", 1, 4);
+    choice = get_integer_input("Enter your choice: ", 1, 5);
 
     switch (choice)
     {
@@ -1722,7 +1723,11 @@ void main_menu_navigation(ParticleCatalogue<Particle> &user_catalogue)
       wait_for_enter("\n Hit Enter to go back to the main menu:");
       break;
     case 4:
+      clear_screen();
+      return;
+    case 5:
       std::cout << "Exiting the program\n";
+      exit(0);
       return;
     default:
       std::cout << "Invalid choice. Please try again.\n";

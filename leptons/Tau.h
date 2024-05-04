@@ -17,8 +17,6 @@
 // Tau class
 class Tau : public Lepton
 {
-private:
-
 public:
   // Constructors
   Tau(std::unique_ptr<FourMomentum> four_momentum, std::vector<std::unique_ptr<Particle>> decay_products, int lepton_number = 1);
