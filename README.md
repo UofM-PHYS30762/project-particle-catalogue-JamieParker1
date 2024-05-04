@@ -1,15 +1,20 @@
-# Project Compilation Guide
+### Compilation Instructions
 
-## Overview
-This guide provides the necessary steps to compile the C++ project that includes multiple source files grouped under different subdirectories such as leptons, bosons, and quarks.
+Ensure you have `g++` installed and accessible from your command line. This project uses `g++` from MSYS2.
 
-## Requirements
-- GCC Compiler (g++.exe) installed via MSYS2 with the ucrt64 environment.
-- Make sure that all the prerequisites are installed and paths are set correctly.
-
-## Compilation
-To compile the project, use the following command line in your MSYS2 terminal. Navigate to the project directory where your source files are located and execute the command:
+To compile the project, navigate to the project directory in your terminal and run the following command:
 
 ```bash
-C:\\msys64\\ucrt64\\bin\\g++.exe -fdiagnostics-color=always -g "${workspaceFolder}\\leptons/Muon.cpp" "${workspaceFolder}\\leptons/Electron.cpp" "${workspaceFolder}\\leptons/Lepton.cpp" "${workspaceFolder}\\leptons/Tau.cpp" "${workspaceFolder}\\leptons/Neutrino.cpp" "${workspaceFolder}\\bosons/Boson.cpp" "${workspaceFolder}\\bosons/Gluon.cpp" "${workspaceFolder}\\bosons/Photon.cpp" "${workspaceFolder}\\bosons/Z.cpp" "${workspaceFolder}\\bosons/W.cpp" "${workspaceFolder}\\bosons/Higgs.cpp" "${workspaceFolder}\\quarks/Quark.cpp" "${workspaceFolder}\\FourMomentum.cpp" "${workspaceFolder}\\Particle.cpp" "${workspaceFolder}\\helper_functions.cpp" "${workspaceFolder}\\showcase.cpp" "${workspaceFolder}\\user_interface.cpp" "${workspaceFolder}\\project.cpp" -o "${workspaceFolder}\\project"
+C:\\msys64\\ucrt64\\bin\\g++.exe -fdiagnostics-color=always -g "leptons/Muon.cpp" "leptons/Electron.cpp" "leptons/Lepton.cpp" "leptons/Tau.cpp" "leptons/Neutrino.cpp" "bosons/Boson.cpp" "bosons/Gluon.cpp" "bosons/Photon.cpp" "bosons/Z.cpp" "bosons/W.cpp" "bosons/Higgs.cpp" "quarks/Quark.cpp" "FourMomentum.cpp" "Particle.cpp" "helper_functions.cpp" "showcase.cpp" "user_interface.cpp" "project.cpp" -o "project"
+```
+
+After compilation, you can run the program on Windows by navigating to the output directory and executing:
+```bash
+.\project
+```
+Or, on Unix-like systems:
+```bash
+./project
+```
+Make sure to adjust the file paths in the compilation command if you're placing project files in a different directory. These instructions assume that the terminal's current working directory is the same as where the source files are located.
 
