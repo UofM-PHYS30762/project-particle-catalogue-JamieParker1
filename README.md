@@ -8,6 +8,12 @@ To compile the project, navigate to the project directory in your terminal and r
 C:\\msys64\\ucrt64\\bin\\g++.exe -fdiagnostics-color=always -g "leptons/Muon.cpp" "leptons/Electron.cpp" "leptons/Lepton.cpp" "leptons/Tau.cpp" "leptons/Neutrino.cpp" "bosons/Boson.cpp" "bosons/Gluon.cpp" "bosons/Photon.cpp" "bosons/Z.cpp" "bosons/W.cpp" "bosons/Higgs.cpp" "quarks/Quark.cpp" "FourMomentum.cpp" "Particle.cpp" "helper_functions.cpp" "showcase.cpp" "user_interface.cpp" "project.cpp" -o "project"
 ```
 
+If on the **lab computer**:
+
+```bash
+g++.exe -fdiagnostics-color=always -g "leptons/Muon.cpp" "leptons/Electron.cpp" "leptons/Lepton.cpp" "leptons/Tau.cpp" "leptons/Neutrino.cpp" "bosons/Boson.cpp" "bosons/Gluon.cpp" "bosons/Photon.cpp" "bosons/Z.cpp" "bosons/W.cpp" "bosons/Higgs.cpp" "quarks/Quark.cpp" "FourMomentum.cpp" "Particle.cpp" "helper_functions.cpp" "showcase.cpp" "user_interface.cpp" "project.cpp" -o "project"
+```
+
 After compilation, you can run the program on Windows by navigating to the output directory and executing:
 ```bash
 .\project
